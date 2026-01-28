@@ -1,13 +1,32 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { HeroSection } from '@/components/HeroSection';
+import Dashboard from './Dashboard';
 
 const Index = () => {
+  const [showDashboard, setShowDashboard] = useState(false);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <AnimatePresence mode="wait">
+      {!showDashboard ? (
+        <motion.div
+          key="hero"
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.5 }}
+        >
+          <HeroSection onEnterDashboard={() => setShowDashboard(true)} />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="dashboard"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Dashboard />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 
