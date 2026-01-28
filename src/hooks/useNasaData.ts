@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { NasaNeoResponse, ProcessedAsteroid } from '@/types/asteroid';
 import { processAsteroid } from '@/lib/asteroidUtils';
 
-const NASA_API_KEY = 'YzHnGjYipUdFNW45rrKqf5YtgHJ5WY13Xo07hnnk';
+const NASA_API_KEY = import.meta.env.VITE_NASA_API_KEY || 'DEMO_KEY';
 const NASA_NEO_API = 'https://api.nasa.gov/neo/rest/v1/feed';
 
 function getDateRange(days: number = 7): { startDate: string; endDate: string } {
