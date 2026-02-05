@@ -29,10 +29,10 @@ export function Header({ isLoading, lastUpdated, criticalCount = 0, onRefresh }:
             </motion.div>
             <div>
               <h1 className="font-orbitron text-xl md:text-2xl font-bold text-gradient-cosmic">
-                NEO Hazard Monitor
+                Asteroid Threat Detection
               </h1>
               <p className="text-xs text-muted-foreground hidden sm:block">
-                Real-Time Asteroid Threat Detection System
+                Real-Time Monitoring & ML Classification
               </p>
             </div>
           </div>
