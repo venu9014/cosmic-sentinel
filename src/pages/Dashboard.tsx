@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 import {
   Rocket,
   Target,
@@ -123,7 +124,10 @@ export default function Dashboard() {
         isLoading={isLoading}
         lastUpdated={dataUpdatedAt ? new Date(dataUpdatedAt) : undefined}
         criticalCount={criticalAsteroids.length}
-        onRefresh={() => refetch()}
+        onRefresh={() => {
+          toast.info('Refreshing asteroid data...');
+          refetch();
+        }}
       />
 
       <main className="container mx-auto px-4 py-8 relative z-10">
