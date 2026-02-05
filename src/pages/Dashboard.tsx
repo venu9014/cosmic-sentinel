@@ -21,6 +21,7 @@ import { AsteroidCard } from '@/components/AsteroidCard';
 import { AsteroidDetailModal } from '@/components/AsteroidDetailModal';
 import { FilterControls } from '@/components/FilterControls';
 import { LoadingScreen } from '@/components/LoadingScreen';
+ import { StatsDetailModal, StatsType } from '@/components/StatsDetailModal';
 
 export default function Dashboard() {
   const { data: asteroids, isLoading, error, refetch, dataUpdatedAt } = useNasaData();
@@ -29,6 +30,7 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [riskFilter, setRiskFilter] = useState('all');
   const [sortBy, setSortBy] = useState('risk');
+   const [statsModalType, setStatsModalType] = useState<StatsType | null>(null);
 
   const stats = useMemo(() => {
     return calculateDashboardStats(asteroids || []);
@@ -140,6 +142,7 @@ export default function Dashboard() {
             icon={Activity}
             variant="primary"
             index={0}
+             onClick={() => setStatsModalType('total')}
           />
           <StatsCard
             title="Hazardous"
@@ -148,6 +151,7 @@ export default function Dashboard() {
             icon={AlertTriangle}
             variant="danger"
             index={1}
+             onClick={() => setStatsModalType('hazardous')}
           />
           <StatsCard
             title="Safe"
@@ -156,6 +160,7 @@ export default function Dashboard() {
             icon={Shield}
             variant="success"
             index={2}
+             onClick={() => setStatsModalType('safe')}
           />
           <StatsCard
             title="Avg Risk Score"
@@ -164,6 +169,7 @@ export default function Dashboard() {
             icon={TrendingUp}
             variant="warning"
             index={3}
+             onClick={() => setStatsModalType('riskScore')}
           />
         </div>
 
@@ -284,6 +290,17 @@ export default function Dashboard() {
         open={!!selectedAsteroid}
         onClose={() => setSelectedAsteroid(null)}
       />
+       
+       <StatsDetailModal
+         open={!!statsModalType}
+         onClose={() => setStatsModalType(null)}
+         type={statsModalType}
+         asteroids={asteroids || []}
+         onAsteroidClick={(asteroid) => {
+           setStatsModalType(null);
+           setSelectedAsteroid(asteroid);
+         }}
+       />
     </div>
   );
 }
