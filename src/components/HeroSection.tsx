@@ -92,7 +92,7 @@ export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.8 + index * 0.1 }}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted/30 border border-border backdrop-blur-sm"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl shadow-lg shadow-black/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300"
               >
                 <feature.icon className={`w-4 h-4 ${feature.color}`} />
                 <span className="text-sm font-medium">{feature.label}</span>
