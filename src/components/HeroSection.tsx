@@ -61,7 +61,7 @@ export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="font-orbitron text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-gradient-cosmic"
           >
-            NEO Hazard Monitor
+            Asteroid Threat Detection
           </motion.h1>
 
           {/* Subtitle */}
