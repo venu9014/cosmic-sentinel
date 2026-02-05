@@ -9,6 +9,13 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
+  const features = [
+    { icon: Activity, label: 'Live NASA Data', color: 'text-primary', description: 'Real-time asteroid tracking from NASA NEO API' },
+    { icon: Rocket, label: 'ML Risk Scoring', color: 'text-secondary', description: 'Machine learning hazard classification' },
+    { icon: Shield, label: 'Threat Detection', color: 'text-success', description: 'Automated threat level assessment' },
+    { icon: AlertTriangle, label: 'Alert System', color: 'text-warning', description: 'Critical asteroid proximity alerts' },
+  ];
+
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
@@ -81,22 +88,19 @@ export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
             transition={{ delay: 0.7, duration: 0.6 }}
             className="flex flex-wrap justify-center gap-4 mb-10"
           >
-            {[
-              { icon: Activity, label: 'Live NASA Data', color: 'text-primary' },
-              { icon: Rocket, label: 'ML Risk Scoring', color: 'text-secondary' },
-              { icon: Shield, label: 'Threat Detection', color: 'text-success' },
-              { icon: AlertTriangle, label: 'Alert System', color: 'text-warning' },
-            ].map((feature, index) => (
-              <motion.div
+            {features.map((feature, index) => (
+              <motion.button
                 key={feature.label}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.8 + index * 0.1 }}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl shadow-lg shadow-black/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300"
+                onClick={onEnterDashboard}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl shadow-lg shadow-black/10 hover:bg-white/10 hover:border-white/20 hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
+                title={feature.description}
               >
                 <feature.icon className={`w-4 h-4 ${feature.color}`} />
                 <span className="text-sm font-medium">{feature.label}</span>
-              </motion.div>
+              </motion.button>
             ))}
           </motion.div>
 
