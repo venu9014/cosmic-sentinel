@@ -11,6 +11,7 @@ interface StatsCardProps {
   trend?: 'up' | 'down' | 'neutral';
   variant?: 'default' | 'danger' | 'warning' | 'success' | 'primary';
   index?: number;
+   onClick?: () => void;
 }
 
 export function StatsCard({
@@ -20,6 +21,7 @@ export function StatsCard({
   icon: Icon,
   variant = 'default',
   index = 0,
+   onClick,
 }: StatsCardProps) {
   const getVariantClasses = () => {
     switch (variant) {
@@ -66,11 +68,12 @@ export function StatsCard({
     >
       <Card
         className={cn(
-          'card-space group transition-all duration-300 hover:scale-[1.02]',
+           'card-space group transition-all duration-300 hover:scale-[1.02] cursor-pointer',
           classes.card,
           classes.glow,
           'hover:shadow-xl'
         )}
+         onClick={onClick}
       >
         <CardContent className="p-6">
           <div className="flex items-start justify-between">
