@@ -9,9 +9,11 @@ import {
   Shield,
   Activity,
   TrendingUp,
+  Download,
 } from 'lucide-react';
 import { useNasaData } from '@/hooks/useNasaData';
 import { calculateDashboardStats } from '@/lib/asteroidUtils';
+import { exportAllAsteroidsToPdf } from '@/lib/pdfExport';
 import { ProcessedAsteroid } from '@/types/asteroid';
 import { StarField } from '@/components/StarField';
 import { Header } from '@/components/Header';
@@ -21,7 +23,8 @@ import { AsteroidCard } from '@/components/AsteroidCard';
 import { AsteroidDetailModal } from '@/components/AsteroidDetailModal';
 import { FilterControls } from '@/components/FilterControls';
 import { LoadingScreen } from '@/components/LoadingScreen';
- import { StatsDetailModal, StatsType } from '@/components/StatsDetailModal';
+import { StatsDetailModal, StatsType } from '@/components/StatsDetailModal';
+import { Button } from '@/components/ui/button';
 
 export default function Dashboard() {
   const { data: asteroids, isLoading, error, refetch, dataUpdatedAt } = useNasaData();
@@ -261,9 +264,24 @@ export default function Dashboard() {
             <h2 className="font-orbitron text-xl font-semibold">
               Near-Earth Objects
             </h2>
-            <span className="text-sm text-muted-foreground">
-              Showing {filteredAsteroids.length} of {asteroids?.length || 0}
-            </span>
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-muted-foreground">
+                Showing {filteredAsteroids.length} of {asteroids?.length || 0}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  toast.info('Generating PDF report...');
+                  exportAllAsteroidsToPdf(filteredAsteroids);
+                  toast.success('PDF report downloaded!');
+                }}
+                className="gap-2"
+              >
+                <Download className="w-4 h-4" />
+                Export All PDF
+              </Button>
+            </div>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
