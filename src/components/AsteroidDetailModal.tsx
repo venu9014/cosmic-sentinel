@@ -1,14 +1,12 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ExternalLink, Target, Gauge, Rocket, Orbit, Star, AlertTriangle, Shield, Download } from 'lucide-react';
+import { X, ExternalLink, Target, Gauge, Rocket, Orbit, Star, AlertTriangle, Shield } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { RiskMeter } from '@/components/RiskMeter';
 import { ProcessedAsteroid } from '@/types/asteroid';
 import { formatDistance, formatVelocity, formatDiameter } from '@/lib/asteroidUtils';
-import { exportAsteroidToPdf } from '@/lib/pdfExport';
 import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
 
 interface AsteroidDetailModalProps {
   asteroid: ProcessedAsteroid | null;
@@ -179,18 +177,6 @@ export function AsteroidDetailModal({ asteroid, open, onClose }: AsteroidDetailM
                 <ExternalLink className="w-4 h-4 mr-2" />
                 View on NASA JPL
               </a>
-            </Button>
-            <Button 
-              variant="secondary"
-              onClick={() => {
-                toast.info('Generating PDF report...');
-                exportAsteroidToPdf(asteroid);
-                toast.success('PDF report downloaded!');
-              }}
-              className="gap-2"
-            >
-              <Download className="w-4 h-4" />
-              Export PDF
             </Button>
             <Button variant="outline" onClick={onClose}>
               Close

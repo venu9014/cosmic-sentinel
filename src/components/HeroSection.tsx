@@ -1,10 +1,8 @@
 import { motion } from 'framer-motion';
-import { Orbit, Rocket, Shield, AlertTriangle, ArrowRight, Activity, FileText } from 'lucide-react';
+import { Orbit, Rocket, Shield, AlertTriangle, ArrowRight, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { StarField } from '@/components/StarField';
 import spaceHero from '@/assets/space-hero.jpg';
-import { exportProjectDocumentation } from '@/lib/projectDocumentation';
-import { toast } from 'sonner';
 
 interface HeroSectionProps {
   onEnterDashboard: () => void;
@@ -106,12 +104,11 @@ export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
             ))}
           </motion.div>
 
-          {/* CTA Buttons */}
+          {/* CTA Button */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
             <Button
               variant="cosmic"
@@ -121,19 +118,6 @@ export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
             >
               Enter Mission Control
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => {
-                toast.info('Generating project documentation...');
-                exportProjectDocumentation();
-                toast.success('Documentation PDF downloaded!');
-              }}
-              className="gap-2 border-primary/50 hover:bg-primary/10"
-            >
-              <FileText className="w-4 h-4" />
-              Download Project Report
             </Button>
           </motion.div>
 

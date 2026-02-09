@@ -1,14 +1,12 @@
 import { motion } from 'framer-motion';
-import { ExternalLink, Rocket, Gauge, Target, AlertTriangle, Download } from 'lucide-react';
+import { ExternalLink, Rocket, Gauge, Target, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { RiskMeter } from '@/components/RiskMeter';
 import { ProcessedAsteroid } from '@/types/asteroid';
 import { formatDistance, formatVelocity, formatDiameter } from '@/lib/asteroidUtils';
-import { exportAsteroidToPdf } from '@/lib/pdfExport';
 import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
 
 interface AsteroidCardProps {
   asteroid: ProcessedAsteroid;
@@ -151,19 +149,6 @@ export function AsteroidCard({ asteroid, index = 0, onViewDetails }: AsteroidCar
               }}
             >
               View Analysis
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                toast.info('Generating PDF...');
-                exportAsteroidToPdf(asteroid);
-                toast.success('PDF downloaded!');
-              }}
-              title="Download PDF Report"
-            >
-              <Download className="w-4 h-4" />
             </Button>
             <Button
               variant="ghost"
