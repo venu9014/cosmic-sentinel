@@ -1,0 +1,4 @@
+project_id = "tzjofdnapubpvjtkiioz"
+
+[functions.astronomy-chat]
+verify_jwt = false

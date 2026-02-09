@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
-import { Orbit, Rocket, Shield, AlertTriangle, ArrowRight, Activity } from 'lucide-react';
+import { Orbit, Rocket, Shield, AlertTriangle, ArrowRight, Activity, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { StarField } from '@/components/StarField';
+import { Link } from 'react-router-dom';
 import spaceHero from '@/assets/space-hero.jpg';
 
 interface HeroSectionProps {
@@ -104,11 +105,12 @@ export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
             ))}
           </motion.div>
 
-          {/* CTA Button */}
+          {/* CTA Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.6 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             <Button
               variant="cosmic"
@@ -119,6 +121,17 @@ export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
               Enter Mission Control
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Button>
+            
+            <Link to="/chatbot">
+              <Button
+                variant="glow"
+                size="xl"
+                className="group w-full"
+              >
+                <Bot className="w-5 h-5" />
+                AstroBot AI Chat
+              </Button>
+            </Link>
           </motion.div>
 
           {/* Stats Preview */}
