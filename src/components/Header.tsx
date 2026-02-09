@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
-import { Orbit, RefreshCw, AlertTriangle, Activity } from 'lucide-react';
+import { Orbit, RefreshCw, AlertTriangle, Activity, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Link } from 'react-router-dom';
 
 interface HeaderProps {
   isLoading?: boolean;
@@ -50,6 +51,13 @@ export function Header({ isLoading, lastUpdated, criticalCount = 0, onRefresh }:
                 </Badge>
               </motion.div>
             )}
+
+            <Link to="/chatbot">
+              <Button variant="outline" size="sm" className="gap-2">
+                <Bot className="w-4 h-4" />
+                <span className="hidden sm:inline">AstroBot</span>
+              </Button>
+            </Link>
 
             <div className="hidden md:flex items-center gap-2 text-xs text-muted-foreground">
               <Activity className="w-3 h-3 text-success animate-pulse" />
