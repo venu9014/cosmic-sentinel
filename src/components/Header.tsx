@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Orbit, RefreshCw, AlertTriangle, Activity, Bot } from 'lucide-react';
+import { Orbit, RefreshCw, AlertTriangle, Activity, Bot, Telescope } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
@@ -51,6 +51,13 @@ export function Header({ isLoading, lastUpdated, criticalCount = 0, onRefresh }:
                 </Badge>
               </motion.div>
             )}
+
+            <Link to="/light-curve">
+              <Button variant="outline" size="sm" className="gap-2">
+                <Telescope className="w-4 h-4" />
+                <span className="hidden sm:inline">Light Curve</span>
+              </Button>
+            </Link>
 
             <Link to="/chatbot">
               <Button variant="outline" size="sm" className="gap-2">
