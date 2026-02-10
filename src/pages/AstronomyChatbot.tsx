@@ -139,7 +139,7 @@ export default function AstronomyChatbot() {
       {/* Header */}
       <header className="sticky top-0 z-20 backdrop-blur-md bg-background/80 border-b border-border">
         <div className="container mx-auto px-4 py-4 flex items-center gap-4">
-          <Link to="/">
+          <Link to="/" state={{ showDashboard: true }}>
             <Button variant="ghost" size="icon">
               <ArrowLeft className="w-5 h-5" />
             </Button>
