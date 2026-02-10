@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import { HeroSection } from '@/components/HeroSection';
 import Dashboard from './Dashboard';
 
 const Index = () => {
-  const [showDashboard, setShowDashboard] = useState(false);
+  const location = useLocation();
+  const [showDashboard, setShowDashboard] = useState(
+    !!(location.state as any)?.showDashboard
+  );
 
   return (
     <AnimatePresence mode="wait">
