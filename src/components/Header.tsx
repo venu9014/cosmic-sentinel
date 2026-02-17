@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Orbit, RefreshCw, AlertTriangle, Activity, Bot, Telescope } from 'lucide-react';
+import { Orbit, RefreshCw, AlertTriangle, Activity, Bot, Telescope, FlaskConical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
@@ -63,6 +63,13 @@ export function Header({ isLoading, lastUpdated, criticalCount = 0, onRefresh }:
               <Button variant="outline" size="sm" className="gap-2">
                 <Bot className="w-4 h-4" />
                 <span className="hidden sm:inline">AstroBot</span>
+              </Button>
+            </Link>
+
+            <Link to="/research">
+              <Button variant="outline" size="sm" className="gap-2">
+                <FlaskConical className="w-4 h-4" />
+                <span className="hidden sm:inline">Research</span>
               </Button>
             </Link>
 

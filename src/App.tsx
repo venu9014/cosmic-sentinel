@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 
 import AstronomyChatbot from "./pages/AstronomyChatbot";
 import LightCurve from "./pages/LightCurve";
+import ResearchDashboard from "./pages/ResearchDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           
           <Route path="/chatbot" element={<AstronomyChatbot />} />
           <Route path="/light-curve" element={<LightCurve />} />
+          <Route path="/research" element={<ResearchDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
