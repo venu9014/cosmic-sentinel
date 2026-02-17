@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Star, Globe, CheckCircle2, Target, FlaskConical } from 'lucide-react';
+import { ArrowLeft, Star, Globe, CheckCircle2, Target, FlaskConical, Info, Search, BarChart3, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -223,6 +223,102 @@ export default function ResearchDashboard() {
                 </Card>
               </motion.div>
             </div>
+
+            {/* ── About Section ────────────────────── */}
+            <motion.section
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+              className="space-y-6"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-primary/20">
+                  <Info className="w-6 h-6 text-primary" />
+                </div>
+                <h2 className="font-orbitron text-xl md:text-2xl font-bold text-gradient-cosmic">
+                  About the Research Dashboard
+                </h2>
+              </div>
+
+              <Card className="card-space">
+                <CardContent className="p-6 md:p-8 space-y-4">
+                  <p className="text-muted-foreground leading-relaxed">
+                    The Research Dashboard aggregates data from NASA's Kepler mission star catalogue to provide a real-time overview of exoplanet transit detections. Every metric and chart updates automatically as the underlying dataset is processed, giving researchers an at-a-glance summary of detection progress.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="card-space group transition-all duration-300 hover:scale-[1.02] border-primary/20 hover:border-primary/40 hover:shadow-[0_0_30px_hsl(var(--primary)/0.15)]">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-primary/20">
+                        <BarChart3 className="w-5 h-5 text-primary" />
+                      </div>
+                      <CardTitle className="text-base">How Statistics Are Computed</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm text-muted-foreground leading-relaxed">
+                    <p><span className="text-foreground font-medium">Total Stars Analyzed</span> — unique star systems in the dataset.</p>
+                    <p><span className="text-foreground font-medium">Candidate Planets</span> — objects flagged by transit-depth thresholds but awaiting confirmation.</p>
+                    <p><span className="text-foreground font-medium">Confirmed Planets</span> — candidates verified by deeper transit signatures (depth ≥ 0.01).</p>
+                    <p><span className="text-foreground font-medium">Detection Accuracy</span> — ratio of confirmed to total detections, expressed as a percentage.</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="card-space group transition-all duration-300 hover:scale-[1.02] border-success/20 hover:border-success/40 hover:shadow-[0_0_30px_hsl(var(--success)/0.15)]">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-success/20">
+                        <Search className="w-5 h-5 text-success" />
+                      </div>
+                      <CardTitle className="text-base">Light-Curve Chart</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm text-muted-foreground leading-relaxed">
+                    <p>The <span className="text-foreground font-medium">Sample Light Curve</span> plot renders brightness over time for a selected star system.</p>
+                    <p>A shaded <span className="text-foreground font-medium">reference area</span> highlights the transit window — the interval where a planet crosses the stellar disk, causing a measurable dip in flux.</p>
+                    <p>This visualisation mirrors the primary technique used by the Kepler space telescope to discover thousands of exoplanets.</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="card-space group transition-all duration-300 hover:scale-[1.02] border-warning/20 hover:border-warning/40 hover:shadow-[0_0_30px_hsl(var(--warning)/0.15)]">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-warning/20">
+                        <Layers className="w-5 h-5 text-warning" />
+                      </div>
+                      <CardTitle className="text-base">Detection Distribution</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm text-muted-foreground leading-relaxed">
+                    <p>The bar chart breaks down results into three categories:</p>
+                    <p><span className="text-foreground font-medium">Confirmed</span> — high-confidence detections with strong, repeatable transit signals.</p>
+                    <p><span className="text-foreground font-medium">Candidate</span> — potential signals that require additional observation or vetting.</p>
+                    <p><span className="text-foreground font-medium">No Detection</span> — stars where no planetary transit was identified in the observation window.</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="card-space group transition-all duration-300 hover:scale-[1.02] border-secondary/20 hover:border-secondary/40 hover:shadow-[0_0_30px_hsl(var(--secondary)/0.15)]">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-secondary/20">
+                        <FlaskConical className="w-5 h-5 text-secondary" />
+                      </div>
+                      <CardTitle className="text-base">Analysis Workflow</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="text-sm text-muted-foreground leading-relaxed">
+                    <ol className="list-decimal list-inside space-y-2">
+                      <li><span className="text-foreground font-medium">Data Ingestion</span> — Star system catalogue is loaded and normalised.</li>
+                      <li><span className="text-foreground font-medium">Transit Search</span> — Each star's light curve is scanned for periodic brightness dips using depth thresholds.</li>
+                      <li><span className="text-foreground font-medium">Classification</span> — Detections are tagged as <em>confirmed</em> or <em>candidate</em> based on transit depth.</li>
+                      <li><span className="text-foreground font-medium">Aggregation</span> — Statistics, distribution counts, and orbital-period bins are computed and rendered in real time.</li>
+                    </ol>
+                  </CardContent>
+                </Card>
+              </div>
+            </motion.section>
           </>
         )}
       </main>
