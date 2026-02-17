@@ -12,7 +12,7 @@ import {
   ReferenceLine,
   Brush,
 } from 'recharts';
-import { ArrowLeft, Star, Orbit, Telescope, Sparkles, ChevronDown, Sun } from 'lucide-react';
+import { ArrowLeft, Star, Orbit, Telescope, Sparkles, ChevronDown, Sun, Info, BarChart3, Search, Layers } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -320,24 +320,120 @@ export default function LightCurve() {
           </div>
         </motion.div>
 
-        {/* How it works */}
-        <motion.div
+        {/* ── About Section ──────────────────────── */}
+        <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="card-space p-6 rounded-xl"
+          className="space-y-6"
         >
-          <h3 className="font-orbitron text-base font-semibold mb-3 flex items-center gap-2">
-            <Telescope className="w-5 h-5 text-cosmic-cyan" />
-            Transit Photometry Method
-          </h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            When an exoplanet passes in front of its host star (a "transit"), it blocks a small fraction of the star's
-            light, producing a characteristic dip in the light curve. The depth of the dip reveals the planet's size
-            relative to the star, while the period between dips gives the orbital period. The highlighted regions above
-            mark detected transit events where the brightness drops below the baseline flux of 1.0.
-          </p>
-        </motion.div>
+          <div className="flex items-center gap-3 mb-2">
+            <Info className="w-5 h-5 text-primary" />
+            <h2 className="font-orbitron text-lg font-semibold">About Light-Curve Analysis</h2>
+          </div>
+
+          {/* What is a Light Curve */}
+          <div className="card-space p-6 rounded-xl space-y-3">
+            <h3 className="font-orbitron text-base font-semibold flex items-center gap-2">
+              <Telescope className="w-5 h-5 text-cosmic-cyan" />
+              What is a Light Curve?
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              A light curve is a graph that shows how the brightness of a star changes over time. Astronomers continuously
+              monitor the flux (brightness) of distant stars using space telescopes like <span className="text-foreground font-medium">NASA's Kepler</span> and
+              <span className="text-foreground font-medium"> TESS</span> missions. Under normal conditions, a star's brightness remains
+              roughly constant with small natural fluctuations. However, when an orbiting planet passes directly between the star
+              and the observer — an event called a <span className="text-primary font-medium">transit</span> — it blocks a tiny fraction
+              of the starlight, producing a measurable dip in the light curve.
+            </p>
+          </div>
+
+          {/* Transit Photometry Method */}
+          <div className="card-space p-6 rounded-xl space-y-3">
+            <h3 className="font-orbitron text-base font-semibold flex items-center gap-2">
+              <Search className="w-5 h-5 text-success" />
+              Transit Photometry Method
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              When an exoplanet passes in front of its host star (a "transit"), it blocks a small fraction of the star's
+              light, producing a characteristic dip in the light curve. Key properties that can be extracted include:
+            </p>
+            <ul className="text-sm text-muted-foreground space-y-2 ml-4">
+              <li className="flex items-start gap-2">
+                <span className="text-primary mt-1">▸</span>
+                <span><span className="text-foreground font-medium">Transit Depth</span> — The fraction of starlight blocked reveals the planet's size relative to the star. A deeper dip indicates a larger planet.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-primary mt-1">▸</span>
+                <span><span className="text-foreground font-medium">Orbital Period</span> — The time interval between consecutive transits gives the planet's orbital period around its host star.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-primary mt-1">▸</span>
+                <span><span className="text-foreground font-medium">Transit Duration</span> — The total time the dip lasts helps determine the orbit's geometry, including inclination and semi-major axis.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-primary mt-1">▸</span>
+                <span><span className="text-foreground font-medium">Ingress / Egress</span> — The shape of the dip's edges (how quickly brightness drops and recovers) can constrain the planet's impact parameter and limb-darkening effects.</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Analysis Workflow */}
+          <div className="card-space p-6 rounded-xl space-y-3">
+            <h3 className="font-orbitron text-base font-semibold flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-warning" />
+              Analysis Workflow
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+              The light-curve analysis on this page follows a systematic pipeline:
+            </p>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {[
+                { step: '01', title: 'Data Acquisition', desc: 'Time-series photometric data is collected from Kepler-style observations, recording brightness at regular intervals (0.25-hour cadence).' },
+                { step: '02', title: 'Noise Modelling', desc: 'Gaussian noise and slow stellar variability (sinusoidal trends) are modelled to simulate realistic observing conditions.' },
+                { step: '03', title: 'Transit Detection', desc: 'The pipeline scans for periodic brightness dips matching expected transit profiles — box-shaped with smooth ingress/egress curves.' },
+                { step: '04', title: 'Planet Classification', desc: 'Detected transits are classified by depth and period. Planets are categorized as Earth-like, Super-Earth, or Mini-Neptune based on estimated radius.' },
+              ].map((item) => (
+                <div key={item.step} className="flex gap-3">
+                  <span className="font-orbitron text-2xl font-bold text-primary/30 leading-none">{item.step}</span>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{item.title}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed mt-1">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* How This Page Works */}
+          <div className="card-space p-6 rounded-xl space-y-3">
+            <h3 className="font-orbitron text-base font-semibold flex items-center gap-2">
+              <Layers className="w-5 h-5 text-secondary" />
+              How This Page Works
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              This interactive visualization generates simulated Kepler-style light curves for selected star systems. Here's what you can do:
+            </p>
+            <ul className="text-sm text-muted-foreground space-y-2 ml-4">
+              <li className="flex items-start gap-2">
+                <span className="text-secondary mt-1">▸</span>
+                <span><span className="text-foreground font-medium">Select a Star System</span> — Use the dropdown at the top to switch between different Kepler systems, each hosting one or more exoplanets.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-secondary mt-1">▸</span>
+                <span><span className="text-foreground font-medium">Explore the Chart</span> — Hover over data points to inspect flux values. Use the brush control at the bottom of the chart to zoom into specific time ranges.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-secondary mt-1">▸</span>
+                <span><span className="text-foreground font-medium">Toggle Transit Highlights</span> — The "Transits" button enables/disables coloured reference areas that mark detected transit windows on the chart.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-secondary mt-1">▸</span>
+                <span><span className="text-foreground font-medium">View Planet Details</span> — The detected exoplanet cards below the chart show each planet's estimated radius, orbital period, type classification, and transit depth.</span>
+              </li>
+            </ul>
+          </div>
+        </motion.section>
       </main>
     </div>
   );
