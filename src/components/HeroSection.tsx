@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion';
-import { Orbit, Rocket, Shield, AlertTriangle, ArrowRight, Activity, Bot } from 'lucide-react';
+import { Rocket, Shield, AlertTriangle, ArrowRight, Activity, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { StarField } from '@/components/StarField';
 import { Link } from 'react-router-dom';
 import spaceHero from '@/assets/space-hero.jpg';
+import logo from '@/assets/logo.png';
 
 interface HeroSectionProps {
   onEnterDashboard: () => void;
@@ -44,22 +45,7 @@ export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
             transition={{ duration: 0.8, ease: 'easeOut' }}
             className="mb-8"
           >
-            <div className="relative inline-block">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-                className="w-32 h-32 mx-auto"
-              >
-                <Orbit className="w-full h-full text-primary" />
-              </motion.div>
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute inset-0 flex items-center justify-center"
-              >
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-cosmic-gold to-cosmic-orange shadow-lg shadow-cosmic-gold/50" />
-              </motion.div>
-            </div>
+            <img src={logo} alt="AstroTracking AI" className="w-32 h-32 mx-auto rounded-2xl" />
           </motion.div>
 
           {/* Title */}
@@ -69,7 +55,7 @@ export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="font-orbitron text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-gradient-cosmic"
           >
-            Asteroid Threat Detection
+            AstroTracking AI
           </motion.h1>
 
           {/* Subtitle */}
