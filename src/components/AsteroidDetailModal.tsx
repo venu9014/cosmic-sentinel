@@ -59,7 +59,7 @@ export function AsteroidDetailModal({ asteroid, open, onClose }: AsteroidDetailM
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl bg-card border-border overflow-hidden p-0">
+      <DialogContent className="max-w-2xl max-h-[90vh] bg-card border-border overflow-y-auto p-0">
         <div className={cn('h-2', asteroid.riskLevel === 'critical' && 'bg-gradient-to-r from-destructive via-warning to-destructive animate-pulse')} />
         
         <div className="p-6">
