@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { RefreshCw, AlertTriangle, Activity, Bot, Telescope, FlaskConical } from 'lucide-react';
+import { RefreshCw, AlertTriangle, Activity, Bot, Telescope, FlaskConical, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
@@ -46,6 +46,13 @@ export function Header({ isLoading, lastUpdated, criticalCount = 0, onRefresh }:
                 </Badge>
               </motion.div>
             )}
+
+            <Link to="/">
+              <Button variant="outline" size="sm" className="gap-2">
+                <Home className="w-4 h-4" />
+                <span className="hidden sm:inline">Home</span>
+              </Button>
+            </Link>
 
             <Link to="/light-curve">
               <Button variant="outline" size="sm" className="gap-2">
