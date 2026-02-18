@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
-import { Orbit, RefreshCw, AlertTriangle, Activity, Bot, Telescope, FlaskConical } from 'lucide-react';
+import { RefreshCw, AlertTriangle, Activity, Bot, Telescope, FlaskConical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
+import logo from '@/assets/logo.png';
 
 interface HeaderProps {
   isLoading?: boolean;
@@ -21,16 +22,10 @@ export function Header({ isLoading, lastUpdated, criticalCount = 0, onRefresh }:
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-              className="p-2 rounded-xl bg-primary/20"
-            >
-              <Orbit className="w-8 h-8 text-primary" />
-            </motion.div>
+            <img src={logo} alt="AstroTracking AI" className="w-10 h-10 rounded-lg" />
             <div>
               <h1 className="font-orbitron text-xl md:text-2xl font-bold text-gradient-cosmic">
-                Asteroid Threat Detection
+                AstroTracking AI
               </h1>
               <p className="text-xs text-muted-foreground hidden sm:block">
                 Real-Time Monitoring & ML Classification
