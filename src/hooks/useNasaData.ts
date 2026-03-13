@@ -2,9 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { NasaNeoResponse, ProcessedAsteroid } from '@/types/asteroid';
 import { processAsteroid } from '@/lib/asteroidUtils';
 import { toast } from 'sonner';
-
-const NASA_API_KEY = 'DEMO_KEY';
-const NASA_NEO_API = 'https://api.nasa.gov/neo/rest/v1/feed';
+import { supabase } from '@/integrations/supabase/client';
 
 function getDateRange(days: number = 7): { startDate: string; endDate: string } {
   const today = new Date();
@@ -22,20 +20,20 @@ function getDateRange(days: number = 7): { startDate: string; endDate: string } 
 async function fetchNasaData(): Promise<ProcessedAsteroid[]> {
   const { startDate, endDate } = getDateRange(7);
   
-  const url = `${NASA_NEO_API}?start_date=${startDate}&end_date=${endDate}&api_key=${NASA_API_KEY}`;
+  const { data, error } = await supabase.functions.invoke('nasa-proxy', {
+    body: { startDate, endDate },
+  });
   
-  const response = await fetch(url);
-  
-  if (!response.ok) {
-    throw new Error(`NASA API Error: ${response.status}`);
+  if (error) {
+    throw new Error(`NASA API Error: ${error.message}`);
   }
   
-  const data: NasaNeoResponse = await response.json();
+  const neoData: NasaNeoResponse = data;
   
   // Flatten all asteroids from all dates
   const allAsteroids: ProcessedAsteroid[] = [];
   
-  Object.values(data.near_earth_objects).forEach(dateAsteroids => {
+  Object.values(neoData.near_earth_objects).forEach(dateAsteroids => {
     dateAsteroids.forEach(asteroid => {
       allAsteroids.push(processAsteroid(asteroid));
     });

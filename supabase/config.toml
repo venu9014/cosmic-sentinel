@@ -2,3 +2,6 @@ project_id = "tzjofdnapubpvjtkiioz"
 
 [functions.astronomy-chat]
 verify_jwt = false
+
+[functions.nasa-proxy]
+verify_jwt = false
