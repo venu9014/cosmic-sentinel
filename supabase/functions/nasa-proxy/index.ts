@@ -11,10 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const NASA_API_KEY = Deno.env.get("VITE_NASA_API_KEY");
-    if (!NASA_API_KEY) {
-      throw new Error("NASA API key not configured");
-    }
+    const NASA_API_KEY = Deno.env.get("VITE_NASA_API_KEY") || "DEMO_KEY";
 
     const { startDate, endDate } = await req.json();
 
