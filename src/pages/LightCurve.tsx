@@ -10,8 +10,8 @@ import {
   ResponsiveContainer,
   ReferenceArea,
   ReferenceLine,
-  Brush,
-} from 'recharts';
+  Brush } from
+'recharts';
 import { ArrowLeft, Star, Orbit, Telescope, Sparkles, ChevronDown, Sun, Info, BarChart3, Search, Layers } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -22,21 +22,21 @@ import {
   STAR_SYSTEMS,
   type StarSystem,
   type LightCurvePoint,
-  type DetectedPlanet,
-} from '@/lib/lightCurveData';
+  type DetectedPlanet } from
+'@/lib/lightCurveData';
 
-function PlanetCard({ planet, index }: { planet: DetectedPlanet; index: number }) {
+function PlanetCard({ planet, index }: {planet: DetectedPlanet;index: number;}) {
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.8 + index * 0.15 }}
-      className="card-space p-4 rounded-xl flex items-center gap-4"
-    >
+      className="card-space p-4 rounded-xl flex items-center gap-4">
+      
       <div
         className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-        style={{ backgroundColor: planet.color, opacity: 0.2 }}
-      >
+        style={{ backgroundColor: planet.color, opacity: 0.2 }}>
+        
         <Orbit className="w-5 h-5" style={{ color: planet.color }} />
       </div>
       <div className="min-w-0">
@@ -50,8 +50,8 @@ function PlanetCard({ planet, index }: { planet: DetectedPlanet; index: number }
       <Badge variant="outline" className="shrink-0 text-xs" style={{ borderColor: planet.color, color: planet.color }}>
         Depth: {(planet.depth * 100).toFixed(2)}%
       </Badge>
-    </motion.div>
-  );
+    </motion.div>);
+
 }
 
 function CustomTooltip({ active, payload, label }: any) {
@@ -63,14 +63,14 @@ function CustomTooltip({ active, payload, label }: any) {
       <p className="font-semibold">
         Flux: <span className="text-primary">{point.brightness.toFixed(5)}</span>
       </p>
-      {point.isTransit && (
-        <Badge variant="destructive" className="mt-1 text-xs">
+      {point.isTransit &&
+      <Badge variant="destructive" className="mt-1 text-xs">
           <Sparkles className="w-3 h-3 mr-1" />
           Transit Detected
         </Badge>
-      )}
-    </div>
-  );
+      }
+    </div>);
+
 }
 
 export default function LightCurve() {
@@ -82,8 +82,8 @@ export default function LightCurve() {
 
   // Find transit windows for reference areas
   const transitWindows = useMemo(() => {
-    const windows: { start: number; end: number; planetId: string }[] = [];
-    let currentWindow: { start: number; end: number; planetId: string } | null = null;
+    const windows: {start: number;end: number;planetId: string;}[] = [];
+    let currentWindow: {start: number;end: number;planetId: string;} | null = null;
 
     for (const point of lightCurveData) {
       if (point.isTransit && point.planetId) {
@@ -132,8 +132,8 @@ export default function LightCurve() {
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-border"
-      >
+        className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-border">
+        
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link to="/" state={{ showDashboard: true }}>
@@ -146,7 +146,7 @@ export default function LightCurve() {
             </div>
             <div>
               <h1 className="font-orbitron text-lg md:text-xl font-bold text-gradient-cosmic">
-                Light-Curve Analysis
+                ​Finding Exoplanets using Light-Curve Analysis  
               </h1>
               <p className="text-xs text-muted-foreground hidden sm:block">Kepler Transit Photometry</p>
             </div>
@@ -157,8 +157,8 @@ export default function LightCurve() {
               variant={highlightTransits ? 'glow' : 'outline'}
               size="sm"
               onClick={() => setHighlightTransits(!highlightTransits)}
-              className="gap-2"
-            >
+              className="gap-2">
+              
               <Sparkles className="w-4 h-4" />
               <span className="hidden sm:inline">Transits</span>
             </Button>
@@ -172,13 +172,13 @@ export default function LightCurve() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="mb-6"
-        >
+          className="mb-6">
+          
           <div className="relative">
             <button
               onClick={() => setShowSystemPicker(!showSystemPicker)}
-              className="card-space w-full p-4 rounded-xl flex items-center justify-between hover:border-primary/50 transition-colors cursor-pointer"
-            >
+              className="card-space w-full p-4 rounded-xl flex items-center justify-between hover:border-primary/50 transition-colors cursor-pointer">
+              
               <div className="flex items-center gap-4">
                 <div className="p-2 rounded-lg bg-accent/20">
                   <Sun className="w-6 h-6 text-accent" />
@@ -196,23 +196,23 @@ export default function LightCurve() {
               </div>
             </button>
 
-            {showSystemPicker && (
-              <motion.div
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="absolute top-full left-0 right-0 mt-2 card-space rounded-xl border border-border overflow-hidden z-20"
-              >
-                {STAR_SYSTEMS.map((sys) => (
-                  <button
-                    key={sys.name}
-                    onClick={() => {
-                      setSelectedSystem(sys);
-                      setShowSystemPicker(false);
-                    }}
-                    className={`w-full p-4 flex items-center gap-4 hover:bg-muted/30 transition-colors text-left ${
-                      sys.name === selectedSystem.name ? 'bg-primary/10 border-l-2 border-l-primary' : ''
-                    }`}
-                  >
+            {showSystemPicker &&
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="absolute top-full left-0 right-0 mt-2 card-space rounded-xl border border-border overflow-hidden z-20">
+              
+                {STAR_SYSTEMS.map((sys) =>
+              <button
+                key={sys.name}
+                onClick={() => {
+                  setSelectedSystem(sys);
+                  setShowSystemPicker(false);
+                }}
+                className={`w-full p-4 flex items-center gap-4 hover:bg-muted/30 transition-colors text-left ${
+                sys.name === selectedSystem.name ? 'bg-primary/10 border-l-2 border-l-primary' : ''}`
+                }>
+                
                     <Star className="w-5 h-5 text-accent shrink-0" />
                     <div>
                       <p className="font-orbitron font-semibold text-sm">{sys.name}</p>
@@ -221,9 +221,9 @@ export default function LightCurve() {
                       </p>
                     </div>
                   </button>
-                ))}
+              )}
               </motion.div>
-            )}
+            }
           </div>
         </motion.div>
 
@@ -232,8 +232,8 @@ export default function LightCurve() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="card-space p-4 md:p-6 rounded-xl mb-6"
-        >
+          className="card-space p-4 md:p-6 rounded-xl mb-6">
+          
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="font-orbitron text-lg font-semibold">Brightness vs Time</h2>
@@ -252,31 +252,31 @@ export default function LightCurve() {
                   dataKey="time"
                   stroke="hsl(215 20% 45%)"
                   tick={{ fontSize: 11, fill: 'hsl(215 20% 65%)' }}
-                  label={{ value: 'Time (hours)', position: 'insideBottomRight', offset: -5, fill: 'hsl(215 20% 65%)', fontSize: 11 }}
-                />
+                  label={{ value: 'Time (hours)', position: 'insideBottomRight', offset: -5, fill: 'hsl(215 20% 65%)', fontSize: 11 }} />
+                
                 <YAxis
                   domain={yDomain}
                   stroke="hsl(215 20% 45%)"
                   tick={{ fontSize: 11, fill: 'hsl(215 20% 65%)' }}
                   tickFormatter={(v: number) => v.toFixed(3)}
-                  label={{ value: 'Relative Flux', angle: -90, position: 'insideLeft', offset: 20, fill: 'hsl(215 20% 65%)', fontSize: 11 }}
-                />
+                  label={{ value: 'Relative Flux', angle: -90, position: 'insideLeft', offset: 20, fill: 'hsl(215 20% 65%)', fontSize: 11 }} />
+                
                 <Tooltip content={<CustomTooltip />} />
 
                 {/* Transit highlight areas */}
                 {highlightTransits &&
-                  transitWindows.map((w, i) => (
-                    <ReferenceArea
-                      key={i}
-                      x1={w.start}
-                      x2={w.end}
-                      fill={getPlanetColor(w.planetId)}
-                      fillOpacity={0.08}
-                      stroke={getPlanetColor(w.planetId)}
-                      strokeOpacity={0.3}
-                      strokeDasharray="4 2"
-                    />
-                  ))}
+                transitWindows.map((w, i) =>
+                <ReferenceArea
+                  key={i}
+                  x1={w.start}
+                  x2={w.end}
+                  fill={getPlanetColor(w.planetId)}
+                  fillOpacity={0.08}
+                  stroke={getPlanetColor(w.planetId)}
+                  strokeOpacity={0.3}
+                  strokeDasharray="4 2" />
+
+                )}
 
                 <ReferenceLine y={1} stroke="hsl(215 20% 35%)" strokeDasharray="6 3" label="" />
 
@@ -286,15 +286,15 @@ export default function LightCurve() {
                   stroke="hsl(199 89% 48%)"
                   strokeWidth={1.5}
                   dot={false}
-                  activeDot={{ r: 4, fill: 'hsl(199 89% 48%)', stroke: 'hsl(222 47% 4%)', strokeWidth: 2 }}
-                />
+                  activeDot={{ r: 4, fill: 'hsl(199 89% 48%)', stroke: 'hsl(222 47% 4%)', strokeWidth: 2 }} />
+                
                 <Brush
                   dataKey="time"
                   height={28}
                   stroke="hsl(222 30% 25%)"
                   fill="hsl(222 47% 6%)"
-                  travellerWidth={8}
-                />
+                  travellerWidth={8} />
+                
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -305,8 +305,8 @@ export default function LightCurve() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mb-6"
-        >
+          className="mb-6">
+          
           <div className="flex items-center gap-3 mb-4">
             <Orbit className="w-5 h-5 text-primary" />
             <h2 className="font-orbitron text-lg font-semibold">Detected Exoplanets</h2>
@@ -314,9 +314,9 @@ export default function LightCurve() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
-            {selectedSystem.planets.map((planet, i) => (
-              <PlanetCard key={planet.id} planet={planet} index={i} />
-            ))}
+            {selectedSystem.planets.map((planet, i) =>
+            <PlanetCard key={planet.id} planet={planet} index={i} />
+            )}
           </div>
         </motion.div>
 
@@ -325,8 +325,8 @@ export default function LightCurve() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="space-y-6"
-        >
+          className="space-y-6">
+          
           <div className="flex items-center gap-3 mb-2">
             <Info className="w-5 h-5 text-primary" />
             <h2 className="font-orbitron text-lg font-semibold">About Light-Curve Analysis</h2>
@@ -389,19 +389,19 @@ export default function LightCurve() {
             </p>
             <div className="grid sm:grid-cols-2 gap-4">
               {[
-                { step: '01', title: 'Data Acquisition', desc: 'Time-series photometric data is collected from Kepler-style observations, recording brightness at regular intervals (0.25-hour cadence).' },
-                { step: '02', title: 'Noise Modelling', desc: 'Gaussian noise and slow stellar variability (sinusoidal trends) are modelled to simulate realistic observing conditions.' },
-                { step: '03', title: 'Transit Detection', desc: 'The pipeline scans for periodic brightness dips matching expected transit profiles — box-shaped with smooth ingress/egress curves.' },
-                { step: '04', title: 'Planet Classification', desc: 'Detected transits are classified by depth and period. Planets are categorized as Earth-like, Super-Earth, or Mini-Neptune based on estimated radius.' },
-              ].map((item) => (
-                <div key={item.step} className="flex gap-3">
+              { step: '01', title: 'Data Acquisition', desc: 'Time-series photometric data is collected from Kepler-style observations, recording brightness at regular intervals (0.25-hour cadence).' },
+              { step: '02', title: 'Noise Modelling', desc: 'Gaussian noise and slow stellar variability (sinusoidal trends) are modelled to simulate realistic observing conditions.' },
+              { step: '03', title: 'Transit Detection', desc: 'The pipeline scans for periodic brightness dips matching expected transit profiles — box-shaped with smooth ingress/egress curves.' },
+              { step: '04', title: 'Planet Classification', desc: 'Detected transits are classified by depth and period. Planets are categorized as Earth-like, Super-Earth, or Mini-Neptune based on estimated radius.' }].
+              map((item) =>
+              <div key={item.step} className="flex gap-3">
                   <span className="font-orbitron text-2xl font-bold text-primary/30 leading-none">{item.step}</span>
                   <div>
                     <p className="text-sm font-semibold text-foreground">{item.title}</p>
                     <p className="text-xs text-muted-foreground leading-relaxed mt-1">{item.desc}</p>
                   </div>
                 </div>
-              ))}
+              )}
             </div>
           </div>
 
@@ -435,6 +435,6 @@ export default function LightCurve() {
           </div>
         </motion.section>
       </main>
-    </div>
-  );
+    </div>);
+
 }
