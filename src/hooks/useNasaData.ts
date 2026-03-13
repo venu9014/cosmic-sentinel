@@ -33,7 +33,7 @@ async function fetchNasaData(): Promise<ProcessedAsteroid[]> {
   // Flatten all asteroids from all dates
   const allAsteroids: ProcessedAsteroid[] = [];
   
-  Object.values(data.near_earth_objects).forEach(dateAsteroids => {
+  Object.values(neoData.near_earth_objects).forEach(dateAsteroids => {
     dateAsteroids.forEach(asteroid => {
       allAsteroids.push(processAsteroid(asteroid));
     });
