@@ -143,6 +143,45 @@ export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
               </div>
             ))}
           </motion.div>
+
+          {/* Developed By Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.8, duration: 0.6 }}
+            className="mt-12 max-w-md mx-auto"
+          >
+            <div className="bg-card/40 backdrop-blur-xl border border-border rounded-xl p-6 shadow-lg">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-orbitron text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                  Developed By
+                </h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsEditing(!isEditing)}
+                  className="h-8 w-8 p-0 hover:bg-primary/20"
+                >
+                  <Edit2 className="w-4 h-4 text-primary" />
+                </Button>
+              </div>
+              
+              {isEditing ? (
+                <Input
+                  value={developerName}
+                  onChange={(e) => setDeveloperName(e.target.value)}
+                  onBlur={() => setIsEditing(false)}
+                  autoFocus
+                  className="bg-background/50 border-primary/30 focus-visible:ring-primary text-foreground font-medium"
+                  placeholder="Enter developer name"
+                />
+              ) : (
+                <p className="text-lg font-medium text-foreground text-center">
+                  {developerName}
+                </p>
+              )}
+            </div>
+          </motion.div>
         </div>
       </div>
 
