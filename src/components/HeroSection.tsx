@@ -13,6 +13,9 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
+  const [developerName, setDeveloperName] = useState('AstroTracking Team');
+  const [isEditing, setIsEditing] = useState(false);
+
   const features = [
     { icon: Activity, label: 'Live NASA Data', color: 'text-primary', description: 'Real-time asteroid tracking from NASA NEO API' },
     { icon: Rocket, label: 'ML Risk Scoring', color: 'text-secondary', description: 'Machine learning hazard classification' },
