@@ -47,12 +47,6 @@ export function Header({ isLoading, lastUpdated, criticalCount = 0, onRefresh }:
               </motion.div>
             )}
 
-            <Link to="/">
-              <Button variant="outline" size="sm" className="gap-2">
-                <Home className="w-4 h-4" />
-                <span className="hidden sm:inline">Home</span>
-              </Button>
-            </Link>
 
             <Link to="/light-curve">
               <Button variant="outline" size="sm" className="gap-2">
