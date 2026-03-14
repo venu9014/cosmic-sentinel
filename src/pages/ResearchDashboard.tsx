@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Star, Globe, CheckCircle2, Target, FlaskConical, Info, Search, BarChart3, Layers } from 'lucide-react';
+import { ArrowLeft, Star, Globe, CheckCircle2, Target, FlaskConical, Info, Search, BarChart3, Layers, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
