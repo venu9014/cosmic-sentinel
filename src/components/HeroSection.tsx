@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion';
-import { Rocket, Shield, AlertTriangle, ArrowRight, Activity, Bot } from 'lucide-react';
+import { Rocket, Shield, AlertTriangle, ArrowRight, Activity, Bot, Edit2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { StarField } from '@/components/StarField';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import spaceHero from '@/assets/space-hero.jpg';
 import logo from '@/assets/logo.png';
 
