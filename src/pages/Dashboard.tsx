@@ -284,6 +284,11 @@ export default function Dashboard() {
             </div>
           )}
         </motion.div>
+
+        {/* Developed By Section */}
+        <div className="mt-12 max-w-md mx-auto">
+          <DeveloperSection />
+        </div>
       </main>
 
       <AsteroidDetailModal
