@@ -127,6 +127,11 @@ export default function ResearchDashboard() {
               </div>
             </div>
           </div>
+
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Clock className="w-4 h-4" />
+            <span>Data as of: {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</span>
+          </div>
         </div>
       </motion.header>
 
