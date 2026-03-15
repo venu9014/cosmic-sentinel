@@ -70,16 +70,7 @@ export function Header({ isLoading, lastUpdated, criticalCount = 0, onRefresh }:
               </Button>
             </Link>
 
-            <div className="hidden md:flex items-center gap-2 text-xs text-muted-foreground">
-              <Activity className="w-3 h-3 text-success animate-pulse" />
-              <span>Live Data</span>
-            </div>
-
-            {lastUpdated && (
-              <span className="hidden lg:block text-xs text-muted-foreground">
-                Updated: {lastUpdated.toLocaleTimeString()}
-              </span>
-            )}
+            <LiveClock />
 
             <Button
               variant="glow"
