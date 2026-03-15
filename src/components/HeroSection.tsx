@@ -11,6 +11,7 @@ interface HeroSectionProps {
   onEnterDashboard: () => void;
 }
 
+export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
   const features = [
     { icon: Activity, label: 'Live NASA Data', color: 'text-primary', description: 'Real-time asteroid tracking from NASA NEO API' },
     { icon: Rocket, label: 'ML Risk Scoring', color: 'text-secondary', description: 'Machine learning hazard classification' },
