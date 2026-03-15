@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 import logo from '@/assets/logo.png';
+import { LiveClock } from '@/components/LiveClock';
 
 interface HeaderProps {
   isLoading?: boolean;
