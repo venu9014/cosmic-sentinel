@@ -1,21 +1,17 @@
 import { motion } from 'framer-motion';
-import { Rocket, Shield, AlertTriangle, ArrowRight, Activity, Bot, Edit2 } from 'lucide-react';
+import { Rocket, Shield, AlertTriangle, ArrowRight, Activity, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { StarField } from '@/components/StarField';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
 import spaceHero from '@/assets/space-hero.jpg';
 import logo from '@/assets/logo.png';
+import { LiveClock } from '@/components/LiveClock';
 
 interface HeroSectionProps {
   onEnterDashboard: () => void;
 }
 
 export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
-  const [developerName, setDeveloperName] = useState('AstroTracking Team');
-  const [isEditing, setIsEditing] = useState(false);
-
   const features = [
     { icon: Activity, label: 'Live NASA Data', color: 'text-primary', description: 'Real-time asteroid tracking from NASA NEO API' },
     { icon: Rocket, label: 'ML Risk Scoring', color: 'text-secondary', description: 'Machine learning hazard classification' },
@@ -125,62 +121,14 @@ export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
             </Link>
           </motion.div>
 
-          {/* Stats Preview */}
+          {/* Live Clock */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ delay: 1.5, duration: 0.6 }}
-            className="mt-16 grid grid-cols-3 gap-8 max-w-lg mx-auto"
+            className="mt-12 flex justify-center"
           >
-            {[
-              { value: '7 Days', label: 'Forecast Window' },
-              { value: 'Real-Time', label: 'NASA API' },
-              { value: 'ML', label: 'Classification' },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <p className="font-orbitron text-xl md:text-2xl font-bold text-primary">{stat.value}</p>
-                <p className="text-xs text-muted-foreground">{stat.label}</p>
-              </div>
-            ))}
-          </motion.div>
-
-          {/* Developed By Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.8, duration: 0.6 }}
-            className="mt-12 max-w-md mx-auto"
-          >
-            <div className="bg-card/40 backdrop-blur-xl border border-border rounded-xl p-6 shadow-lg">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-orbitron text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                  Developed By
-                </h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="h-8 w-8 p-0 hover:bg-primary/20"
-                >
-                  <Edit2 className="w-4 h-4 text-primary" />
-                </Button>
-              </div>
-              
-              {isEditing ? (
-                <Input
-                  value={developerName}
-                  onChange={(e) => setDeveloperName(e.target.value)}
-                  onBlur={() => setIsEditing(false)}
-                  autoFocus
-                  className="bg-background/50 border-primary/30 focus-visible:ring-primary text-foreground font-medium"
-                  placeholder="Enter developer name"
-                />
-              ) : (
-                <p className="text-lg font-medium text-foreground text-center">
-                  {developerName}
-                </p>
-              )}
-            </div>
+            <LiveClock />
           </motion.div>
         </div>
       </div>
