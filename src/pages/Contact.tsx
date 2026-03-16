@@ -381,10 +381,10 @@ export default function Contact() {
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">Email Frequency</p>
                     <a
-                      href="mailto:asteroidai@project.com"
+                      href="mailto:contactastrotrackingai@gmail.com"
                       className="text-sm text-foreground hover:text-primary transition-colors font-mono"
                     >
-                      asteroidai@project.com
+                      contactastrotrackingai@gmail.com
                     </a>
                   </div>
                 </div>
