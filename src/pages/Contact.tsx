@@ -408,10 +408,10 @@ export default function Contact() {
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">Voice Channel</p>
                     <a
-                      href="tel:+91XXXXXXXXXX"
+                      href="tel:+919014194696"
                       className="text-sm text-foreground hover:text-secondary transition-colors font-mono"
                     >
-                      +91 XXXXX XXXXX
+                      +91 90141 94696
                     </a>
                   </div>
                 </div>
