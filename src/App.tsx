@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import AstronomyChatbot from "./pages/AstronomyChatbot";
 import LightCurve from "./pages/LightCurve";
 import ResearchDashboard from "./pages/ResearchDashboard";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
