@@ -25,6 +25,7 @@ const App = () => (
           <Route path="/chatbot" element={<AstronomyChatbot />} />
           <Route path="/light-curve" element={<LightCurve />} />
           <Route path="/research" element={<ResearchDashboard />} />
+          <Route path="/contact" element={<Contact />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

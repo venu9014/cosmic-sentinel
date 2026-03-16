@@ -70,6 +70,13 @@ export function Header({ isLoading, lastUpdated, criticalCount = 0, onRefresh }:
               </Button>
             </Link>
 
+            <Link to="/contact">
+              <Button variant="outline" size="sm" className="gap-2">
+                <Mail className="w-4 h-4" />
+                <span className="hidden sm:inline">Contact</span>
+              </Button>
+            </Link>
+
             <LiveClock />
 
             <Button
