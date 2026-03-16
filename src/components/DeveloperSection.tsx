@@ -45,15 +45,21 @@ export function DeveloperSection() {
   };
 
   const handleAdd = async () => {
-    const { error } = await supabase
-      .from('developer_info')
-      .insert({ developer_name: 'New Developer' });
+    try {
+      const { error } = await supabase
+        .from('developer_info')
+        .insert({ developer_name: 'New Developer' });
 
-    if (error) {
-      toast.error('Failed to add developer');
-    } else {
-      toast.success('Developer added');
-      fetchDevelopers();
+      if (error) {
+        console.error('Add developer error:', error);
+        toast.error(`Failed to add developer: ${error.message}`);
+      } else {
+        toast.success('Developer added');
+        fetchDevelopers();
+      }
+    } catch (err: any) {
+      console.error('Network error adding developer:', err);
+      toast.error('Network error — please try again');
     }
   };
 
