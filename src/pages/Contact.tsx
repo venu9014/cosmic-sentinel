@@ -379,7 +379,8 @@ export default function Contact() {
 
             {/* Email card */}
             <motion.div whileHover={{ scale: 1.03 }}>
-              <Card className="backdrop-blur-xl bg-card/40 border-primary/20 p-5 group hover:border-primary/50 hover:shadow-[0_0_20px_hsl(var(--primary)/0.2)] transition-all duration-300 relative overflow-hidden">
+              <a href="mailto:contactastrotrackingai@gmail.com" className="block">
+              <Card className="backdrop-blur-xl bg-card/40 border-primary/20 p-5 group hover:border-primary/50 hover:shadow-[0_0_20px_hsl(var(--primary)/0.2)] transition-all duration-300 relative overflow-hidden cursor-pointer">
                 <motion.span
                   className="absolute right-3 bottom-3 text-lg opacity-20 group-hover:opacity-40 transition-opacity"
                   animate={{ rotate: [0, 10, -10, 0] }}
@@ -393,15 +394,13 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">Email Frequency</p>
-                    <a
-                      href="mailto:contactastrotrackingai@gmail.com"
-                      className="text-sm text-foreground hover:text-primary transition-colors font-mono"
-                    >
+                    <span className="text-sm text-foreground group-hover:text-primary transition-colors font-mono">
                       contactastrotrackingai@gmail.com
-                    </a>
+                    </span>
                   </div>
                 </div>
               </Card>
+              </a>
             </motion.div>
 
             {/* Phone card */}
