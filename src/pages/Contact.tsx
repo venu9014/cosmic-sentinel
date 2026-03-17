@@ -1,12 +1,13 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Mail, Phone, Send, User, AtSign, FileText, MessageSquare, Rocket, Satellite, Radio } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, User, AtSign, FileText, MessageSquare, Rocket, Satellite, Radio } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 function FloatingAsteroid({ delay, x, y, size }: { delay: number; x: string; y: string; size: number }) {
   return (
