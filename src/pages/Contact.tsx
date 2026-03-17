@@ -1,12 +1,13 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Mail, Phone, Send, User, AtSign, FileText, MessageSquare, Rocket, Satellite, Radio } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, User, AtSign, FileText, MessageSquare, Rocket, Satellite, Radio } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 function FloatingAsteroid({ delay, x, y, size }: { delay: number; x: string; y: string; size: number }) {
   return (
@@ -93,12 +94,24 @@ export default function Contact() {
       return;
     }
     setSending(true);
-    await new Promise((r) => setTimeout(r, 2000));
-    setSending(false);
-    setSent(true);
-    toast.success('Transmission sent successfully! 🚀');
-    setFormData({ name: '', email: '', subject: '', message: '' });
-    setTimeout(() => setSent(false), 4000);
+    try {
+      const { error } = await supabase.from('contact_submissions').insert({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        subject: formData.subject.trim() || null,
+        message: formData.message.trim(),
+      });
+      if (error) throw error;
+      setSent(true);
+      toast.success('Transmission sent successfully! 🚀');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setSent(false), 4000);
+    } catch (err) {
+      console.error('Submission error:', err);
+      toast.error('Failed to send transmission. Please try again.');
+    } finally {
+      setSending(false);
+    }
   };
 
   const asteroids = [
