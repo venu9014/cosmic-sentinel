@@ -94,12 +94,24 @@ export default function Contact() {
       return;
     }
     setSending(true);
-    await new Promise((r) => setTimeout(r, 2000));
-    setSending(false);
-    setSent(true);
-    toast.success('Transmission sent successfully! 🚀');
-    setFormData({ name: '', email: '', subject: '', message: '' });
-    setTimeout(() => setSent(false), 4000);
+    try {
+      const { error } = await supabase.from('contact_submissions').insert({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        subject: formData.subject.trim() || null,
+        message: formData.message.trim(),
+      });
+      if (error) throw error;
+      setSent(true);
+      toast.success('Transmission sent successfully! 🚀');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setSent(false), 4000);
+    } catch (err) {
+      console.error('Submission error:', err);
+      toast.error('Failed to send transmission. Please try again.');
+    } finally {
+      setSending(false);
+    }
   };
 
   const asteroids = [
