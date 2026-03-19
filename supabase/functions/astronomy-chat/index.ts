@@ -57,31 +57,40 @@ serve(async (req) => {
     console.log("Chat request:", { messageCount: messages.length, wantsImage, userText: userText.slice(0, 80) });
 
     if (wantsImage) {
-      // Use image generation model
       const imagePrompt = `Create a stunning, scientifically accurate astronomy/space image: ${userText}. Make it photorealistic and visually impressive with cosmic colors and details.`;
 
-      const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-3.1-flash-image-preview",
-          messages: [
-            { role: "user", content: imagePrompt },
-          ],
-          modalities: ["image", "text"],
-        }),
-      });
+      let response: Response | null = null;
+      let lastError = "";
+      for (let attempt = 0; attempt < 3; attempt++) {
+        if (attempt > 0) await new Promise(r => setTimeout(r, 2000 * attempt));
+
+        response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${LOVABLE_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "google/gemini-3.1-flash-image-preview",
+            messages: [{ role: "user", content: imagePrompt }],
+            modalities: ["image", "text"],
+          }),
+        });
+
+        if (response.status !== 429) break;
+        lastError = await response.text();
+        console.log(`Rate limited (attempt ${attempt + 1}/3), retrying...`);
+        response = null;
+      }
+
+      if (!response || response.status === 429) {
+        return new Response(JSON.stringify({ error: "Image generation is busy. Please try again in a few seconds." }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
 
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Image generation error:", response.status, errorText);
-        if (response.status === 429) {
-          return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }),
-            { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        }
         if (response.status === 402) {
           return new Response(JSON.stringify({ error: "AI credits exhausted. Please add credits." }),
             { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
