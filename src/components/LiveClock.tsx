@@ -10,10 +10,10 @@ export function LiveClock() {
   }, []);
 
   return (
-    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-card/60 border border-border backdrop-blur-sm text-xs font-mono">
-      <Clock className="w-3 h-3 text-primary animate-pulse" />
+    <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-card/60 border border-border backdrop-blur-sm text-[10px] font-mono whitespace-nowrap leading-tight">
+      <Clock className="w-3 h-3 text-primary animate-pulse shrink-0" />
       <span className="text-foreground font-semibold">
-        {now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
+        {now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
       </span>
     </div>
   );
