@@ -43,7 +43,7 @@ export function Header({ isLoading, lastUpdated, criticalCount = 0, onRefresh }:
               >
                 <Badge variant="destructive" className="gap-1 animate-pulse text-[10px] px-1.5 py-0.5 whitespace-nowrap">
                   <AlertTriangle className="w-3 h-3 shrink-0" />
-                  {criticalCount} CRIT
+                  {criticalCount} CRITICAL
                 </Badge>
               </motion.div>
             )}
