@@ -19,17 +19,47 @@ type Message = {
   role: 'user' | 'assistant';
   content: string;
   images?: MessageImage[];
+  loadingImages?: boolean;
 };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/astronomy-chat`;
 
 const suggestedQuestions = [
   "What are near-Earth asteroids?",
-  "Generate an image of a black hole",
+  "Tell me about black holes",
   "What is the Torino scale?",
-  "Show me a picture of the Andromeda galaxy",
-  "What causes meteor showers?",
+  "How do meteor showers happen?",
+  "Explain the life cycle of a star",
 ];
+
+async function fetchRelatedImages(userText: string): Promise<MessageImage[]> {
+  try {
+    const resp = await fetch(CHAT_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+      },
+      body: JSON.stringify({
+        messages: [{ role: "user", content: userText }],
+        mode: "related-images",
+      }),
+    });
+
+    if (!resp.ok) return [];
+
+    const data = await resp.json();
+    if (data.type === "image" && data.images?.length > 0) {
+      return data.images.map((img: any) => ({
+        type: img.type || "image_url",
+        image_url: { url: img.image_url?.url || "" },
+      })).filter((img: MessageImage) => img.image_url.url);
+    }
+    return [];
+  } catch {
+    return [];
+  }
+}
 
 export default function AstronomyChatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -70,27 +100,14 @@ export default function AstronomyChatbot() {
 
       const contentType = resp.headers.get("content-type") || "";
 
-      // Image response (non-streaming JSON)
       if (contentType.includes("application/json")) {
         const data = await resp.json();
-        if (data.type === "image") {
-          const images: MessageImage[] = (data.images || []).map((img: any) => ({
-            type: img.type || "image_url",
-            image_url: { url: img.image_url?.url || "" },
-          }));
-          setMessages(prev => [...prev, {
-            role: 'assistant',
-            content: data.text || "Here's your generated image!",
-            images,
-          }]);
-        } else {
-          toast.error(data.error || "Unexpected response");
-        }
+        toast.error(data.error || "Unexpected response");
         setIsLoading(false);
         return;
       }
 
-      // Streaming text response
+      // Stream text response
       if (!resp.body) throw new Error("No response body");
 
       const reader = resp.body.getReader();
@@ -99,7 +116,7 @@ export default function AstronomyChatbot() {
       let assistantContent = "";
       let streamDone = false;
 
-      setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: '', loadingImages: true }]);
 
       while (!streamDone) {
         const { done, value } = await reader.read();
@@ -125,7 +142,7 @@ export default function AstronomyChatbot() {
               assistantContent += content;
               setMessages(prev => {
                 const updated = [...prev];
-                updated[updated.length - 1] = { role: 'assistant', content: assistantContent };
+                updated[updated.length - 1] = { role: 'assistant', content: assistantContent, loadingImages: true };
                 return updated;
               });
             }
@@ -135,10 +152,23 @@ export default function AstronomyChatbot() {
           }
         }
       }
+
+      setIsLoading(false);
+
+      // Now auto-fetch related images
+      const images = await fetchRelatedImages(userMessage);
+      setMessages(prev => {
+        const updated = [...prev];
+        const lastIdx = updated.length - 1;
+        if (lastIdx >= 0 && updated[lastIdx].role === 'assistant') {
+          updated[lastIdx] = { ...updated[lastIdx], images: images.length > 0 ? images : undefined, loadingImages: false };
+        }
+        return updated;
+      });
+
     } catch (error) {
       console.error("Chat error:", error);
       toast.error("Failed to connect to AstroBot");
-    } finally {
       setIsLoading(false);
     }
   };
@@ -202,7 +232,7 @@ export default function AstronomyChatbot() {
                 </div>
                 <h2 className="font-orbitron text-xl font-bold mb-2">Welcome to AstroBot</h2>
                 <p className="text-muted-foreground mb-6 max-w-md mx-auto text-sm">
-                  Ask me anything about space or generate stunning astronomy images!
+                  Ask me anything about space — I'll explain it and show you related images!
                 </p>
                 <div className="flex flex-wrap justify-center gap-2">
                   {suggestedQuestions.map((question, index) => (
@@ -214,9 +244,7 @@ export default function AstronomyChatbot() {
                       onClick={() => handleSuggestion(question)}
                       className="px-3 py-1.5 rounded-full bg-card border border-border hover:border-primary/50 hover:bg-primary/10 transition-all text-xs"
                     >
-                      {question.includes("image") || question.includes("picture") ? (
-                        <span className="flex items-center gap-1"><ImageIcon className="w-3 h-3" />{question}</span>
-                      ) : question}
+                      {question}
                     </motion.button>
                   ))}
                 </div>
@@ -245,25 +273,40 @@ export default function AstronomyChatbot() {
                           <div className="prose prose-sm prose-invert max-w-none">
                             <ReactMarkdown>{message.content || '...'}</ReactMarkdown>
                           </div>
+
+                          {/* Loading images indicator */}
+                          {message.loadingImages && (
+                            <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                              <span>Generating related images...</span>
+                            </div>
+                          )}
+
+                          {/* Related images */}
                           {message.images && message.images.length > 0 && (
-                            <div className="mt-3 space-y-3">
-                              {message.images.map((img, imgIdx) => (
-                                <div key={imgIdx} className="relative group rounded-xl overflow-hidden border border-border">
-                                  <img
-                                    src={img.image_url.url}
-                                    alt={`Generated astronomy image ${imgIdx + 1}`}
-                                    className="w-full rounded-xl max-h-[400px] object-contain bg-black/20"
-                                    loading="lazy"
-                                  />
-                                  <button
-                                    onClick={() => downloadImage(img.image_url.url, imgIdx)}
-                                    className="absolute top-2 right-2 p-1.5 rounded-lg bg-background/80 border border-border opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm"
-                                    title="Download image"
-                                  >
-                                    <Download className="w-4 h-4 text-foreground" />
-                                  </button>
-                                </div>
-                              ))}
+                            <div className="mt-3">
+                              <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
+                                <ImageIcon className="w-3 h-3" /> Related visuals
+                              </p>
+                              <div className="space-y-3">
+                                {message.images.map((img, imgIdx) => (
+                                  <div key={imgIdx} className="relative group rounded-xl overflow-hidden border border-border">
+                                    <img
+                                      src={img.image_url.url}
+                                      alt={`Related astronomy image ${imgIdx + 1}`}
+                                      className="w-full rounded-xl max-h-[400px] object-contain bg-black/20"
+                                      loading="lazy"
+                                    />
+                                    <button
+                                      onClick={() => downloadImage(img.image_url.url, imgIdx)}
+                                      className="absolute top-2 right-2 p-1.5 rounded-lg bg-background/80 border border-border opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm"
+                                      title="Download image"
+                                    >
+                                      <Download className="w-4 h-4 text-foreground" />
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           )}
                         </div>
@@ -288,11 +331,7 @@ export default function AstronomyChatbot() {
                 </div>
                 <div className="bg-card border border-border rounded-2xl px-4 py-3 flex items-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground">
-                    {input === '' && messages[messages.length - 1]?.content?.toLowerCase().match(/generate|image|picture|draw|show me|create/)
-                      ? 'Generating image...'
-                      : 'Thinking...'}
-                  </span>
+                  <span className="text-xs text-muted-foreground">Thinking...</span>
                 </div>
               </motion.div>
             )}
@@ -308,7 +347,7 @@ export default function AstronomyChatbot() {
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about space or 'Generate an image of...'"
+            placeholder="Ask about space..."
             disabled={isLoading}
             className="flex-1 bg-card/50 text-sm h-9"
           />
