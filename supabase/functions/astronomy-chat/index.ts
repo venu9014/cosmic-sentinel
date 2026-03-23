@@ -5,20 +5,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const IMAGE_KEYWORDS = [
-  "generate", "create", "draw", "make", "show me", "picture", "image",
-  "illustration", "visualize", "render", "paint", "design", "sketch",
-  "photo of", "imagine", "depict",
-];
-
-function isImageRequest(message: string): boolean {
-  const lower = message.toLowerCase();
-  return IMAGE_KEYWORDS.some((kw) => lower.includes(kw)) &&
-    (lower.includes("image") || lower.includes("picture") || lower.includes("photo") ||
-     lower.includes("draw") || lower.includes("generate") || lower.includes("create") ||
-     lower.includes("show me") || lower.includes("visualize") || lower.includes("illustrat"));
-}
-
 const systemPrompt = `You are AstroBot, an expert astronomy and space science AI assistant. You have extensive knowledge about:
 - Asteroids, comets, and near-Earth objects (NEOs)
 - Planets, moons, and our solar system
@@ -43,7 +29,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    const { messages, mode } = await req.json();
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -52,15 +38,14 @@ serve(async (req) => {
 
     const lastUserMsg = [...messages].reverse().find((m: any) => m.role === "user");
     const userText = lastUserMsg?.content || "";
-    const wantsImage = isImageRequest(userText);
 
-    console.log("Chat request:", { messageCount: messages.length, wantsImage, userText: userText.slice(0, 80) });
+    console.log("Chat request:", { messageCount: messages.length, mode, userText: userText.slice(0, 80) });
 
-    if (wantsImage) {
-      const imagePrompt = `Create a stunning, scientifically accurate astronomy/space image: ${userText}. Make it photorealistic and visually impressive with cosmic colors and details.`;
+    // Mode: generate related images for a topic
+    if (mode === "related-images") {
+      const imagePrompt = `Generate a stunning, scientifically accurate astronomy/space visualization related to: "${userText}". Create a photorealistic, visually impressive image with cosmic colors and scientific details. Make it educational and relevant to the topic.`;
 
       let response: Response | null = null;
-      let lastError = "";
       for (let attempt = 0; attempt < 3; attempt++) {
         if (attempt > 0) await new Promise(r => setTimeout(r, 2000 * attempt));
 
@@ -78,39 +63,33 @@ serve(async (req) => {
         });
 
         if (response.status !== 429) break;
-        lastError = await response.text();
-        console.log(`Rate limited (attempt ${attempt + 1}/3), retrying...`);
+        await response.text();
+        console.log(`Image rate limited (attempt ${attempt + 1}/3), retrying...`);
         response = null;
       }
 
       if (!response || response.status === 429) {
-        return new Response(JSON.stringify({ error: "Image generation is busy. Please try again in a few seconds." }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        return new Response(JSON.stringify({ type: "image", text: "", images: [] }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Image generation error:", response.status, errorText);
-        if (response.status === 402) {
-          return new Response(JSON.stringify({ error: "AI credits exhausted. Please add credits." }),
-            { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        }
-        return new Response(JSON.stringify({ error: "Image generation failed" }),
-          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        await response.text();
+        return new Response(JSON.stringify({ type: "image", text: "", images: [] }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
       const data = await response.json();
       const choice = data.choices?.[0]?.message;
-      const textContent = choice?.content || "Here's the generated astronomy image!";
       const images = choice?.images || [];
 
       return new Response(
-        JSON.stringify({ type: "image", text: textContent, images }),
+        JSON.stringify({ type: "image", text: choice?.content || "", images }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Regular text streaming with retry for rate limits
+    // Default: streaming text response with retry
     let response: Response | null = null;
     for (let attempt = 0; attempt < 3; attempt++) {
       if (attempt > 0) await new Promise(r => setTimeout(r, 1500 * attempt));
@@ -133,7 +112,7 @@ serve(async (req) => {
 
       if (response.status !== 429) break;
       console.log(`Text rate limited (attempt ${attempt + 1}/3), retrying...`);
-      await response.text(); // consume body
+      await response.text();
       response = null;
     }
 
