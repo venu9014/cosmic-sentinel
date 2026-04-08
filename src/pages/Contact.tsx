@@ -178,7 +178,7 @@ export default function Contact() {
       {/* Header */}
       <div className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-border">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="gap-2">
+          <Button variant="ghost" size="sm" onClick={() => navigate('/', { state: { showDashboard: true } })} className="gap-2">
             <ArrowLeft className="w-4 h-4" />
             Back to Dashboard
           </Button>
