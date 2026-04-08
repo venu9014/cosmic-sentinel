@@ -73,10 +73,10 @@ export default function AstronomyChatbot() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
 
-  const toggleVoice = () => {
+  const toggleVoice = async () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      toast.error('Voice search is not supported in this browser');
+      toast.error('Voice search is not supported in this browser. Please use Chrome or Edge.');
       return;
     }
 
@@ -86,29 +86,53 @@ export default function AstronomyChatbot() {
       return;
     }
 
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
-    recognition.interimResults = true;
-    recognition.continuous = false;
-    recognitionRef.current = recognition;
-
-    recognition.onstart = () => setIsListening(true);
-    recognition.onresult = (event: any) => {
-      const transcript = Array.from(event.results)
-        .map((r: any) => r[0].transcript)
-        .join('');
-      setInput(transcript);
-      if (event.results[0].isFinal) {
-        setIsListening(false);
+    // Request microphone permission first
+    try {
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (err: any) {
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        toast.error('Microphone access denied. Please allow microphone permission in your browser settings.');
+      } else {
+        toast.error('Could not access microphone. Please check your device settings.');
       }
-    };
-    recognition.onerror = () => {
-      setIsListening(false);
-      toast.error('Voice recognition failed. Please try again.');
-    };
-    recognition.onend = () => setIsListening(false);
+      return;
+    }
 
-    recognition.start();
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = true;
+      recognition.continuous = false;
+      recognitionRef.current = recognition;
+
+      recognition.onstart = () => setIsListening(true);
+      recognition.onresult = (event: any) => {
+        const transcript = Array.from(event.results)
+          .map((r: any) => r[0].transcript)
+          .join('');
+        setInput(transcript);
+        if (event.results[0].isFinal) {
+          setIsListening(false);
+        }
+      };
+      recognition.onerror = (event: any) => {
+        setIsListening(false);
+        const msg = event.error === 'not-allowed'
+          ? 'Microphone access denied. Please allow permission.'
+          : event.error === 'no-speech'
+          ? 'No speech detected. Please try again.'
+          : event.error === 'network'
+          ? 'Network error. Voice search requires an internet connection.'
+          : 'Voice recognition failed. Please try again.';
+        toast.error(msg);
+      };
+      recognition.onend = () => setIsListening(false);
+
+      recognition.start();
+    } catch (err) {
+      setIsListening(false);
+      toast.error('Voice search failed to start. Try opening the app in a new tab.');
+    }
   };
 
   useEffect(() => {
