@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Bot, User, Sparkles, ArrowLeft, Loader2, ImageIcon, Download } from 'lucide-react';
+import { Send, Bot, User, Sparkles, ArrowLeft, Loader2, ImageIcon, Download, Mic, MicOff } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { Button } from '@/components/ui/button';
@@ -69,7 +69,47 @@ export default function AstronomyChatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<any>(null);
+
+  const toggleVoice = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      toast.error('Voice search is not supported in this browser');
+      return;
+    }
+
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    recognitionRef.current = recognition;
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onresult = (event: any) => {
+      const transcript = Array.from(event.results)
+        .map((r: any) => r[0].transcript)
+        .join('');
+      setInput(transcript);
+      if (event.results[0].isFinal) {
+        setIsListening(false);
+      }
+    };
+    recognition.onerror = () => {
+      setIsListening(false);
+      toast.error('Voice recognition failed. Please try again.');
+    };
+    recognition.onend = () => setIsListening(false);
+
+    recognition.start();
+  };
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -362,10 +402,21 @@ export default function AstronomyChatbot() {
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about space..."
+            placeholder={isListening ? "Listening..." : "Ask about space..."}
             disabled={isLoading}
             className="flex-1 bg-card/50 text-sm h-9"
           />
+          <Button
+            type="button"
+            onClick={toggleVoice}
+            disabled={isLoading}
+            variant={isListening ? "destructive" : "outline"}
+            size="sm"
+            className={isListening ? "animate-pulse" : ""}
+            title={isListening ? "Stop listening" : "Voice search"}
+          >
+            {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+          </Button>
           <Button type="submit" disabled={isLoading || !input.trim()} variant="cosmic" size="sm">
             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
           </Button>
