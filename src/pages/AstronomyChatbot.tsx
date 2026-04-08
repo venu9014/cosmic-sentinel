@@ -402,10 +402,21 @@ export default function AstronomyChatbot() {
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about space..."
+            placeholder={isListening ? "Listening..." : "Ask about space..."}
             disabled={isLoading}
             className="flex-1 bg-card/50 text-sm h-9"
           />
+          <Button
+            type="button"
+            onClick={toggleVoice}
+            disabled={isLoading}
+            variant={isListening ? "destructive" : "outline"}
+            size="sm"
+            className={isListening ? "animate-pulse" : ""}
+            title={isListening ? "Stop listening" : "Voice search"}
+          >
+            {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+          </Button>
           <Button type="submit" disabled={isLoading || !input.trim()} variant="cosmic" size="sm">
             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
           </Button>
