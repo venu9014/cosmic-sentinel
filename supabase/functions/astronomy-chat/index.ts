@@ -48,52 +48,43 @@ serve(async (req) => {
 
     console.log("Chat request:", { messageCount: messages.length, mode, userText: userText.slice(0, 80) });
 
-    // Mode: generate related images for a topic
+    // Mode: fetch real NASA images for a topic
     if (mode === "related-images") {
-      const imagePrompt = `Generate a stunning, scientifically accurate astronomy/space visualization related to: "${userText}". Create a photorealistic, visually impressive image with cosmic colors and scientific details. Make it educational and relevant to the topic.`;
+      try {
+        // Use NASA Image and Video Library API (free, no key needed)
+        const searchQuery = encodeURIComponent(userText);
+        const nasaResp = await fetch(
+          `https://images-api.nasa.gov/search?q=${searchQuery}&media_type=image&page_size=3`
+        );
 
-      let response: Response | null = null;
-      for (let attempt = 0; attempt < 3; attempt++) {
-        if (attempt > 0) await new Promise(r => setTimeout(r, 2000 * attempt));
+        if (!nasaResp.ok) {
+          return new Response(JSON.stringify({ type: "image", text: "", images: [] }),
+            { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
 
-        response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${LOVABLE_API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "google/gemini-3.1-flash-image-preview",
-            messages: [{ role: "user", content: imagePrompt }],
-            modalities: ["image", "text"],
-          }),
-        });
+        const nasaData = await nasaResp.json();
+        const items = nasaData?.collection?.items || [];
 
-        if (response.status !== 429) break;
-        await response.text();
-        console.log(`Image rate limited (attempt ${attempt + 1}/3), retrying...`);
-        response = null;
-      }
+        const images = items.slice(0, 3).map((item: any) => {
+          const link = item.links?.find((l: any) => l.rel === "preview");
+          const data = item.data?.[0] || {};
+          return {
+            type: "image_url",
+            image_url: { url: link?.href || "" },
+            title: data.title || "",
+            description: data.description?.slice(0, 150) || "",
+          };
+        }).filter((img: any) => img.image_url.url);
 
-      if (!response || response.status === 429) {
+        return new Response(
+          JSON.stringify({ type: "image", text: "", images }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      } catch (err) {
+        console.error("NASA image search error:", err);
         return new Response(JSON.stringify({ type: "image", text: "", images: [] }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
-
-      if (!response.ok) {
-        await response.text();
-        return new Response(JSON.stringify({ type: "image", text: "", images: [] }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-
-      const data = await response.json();
-      const choice = data.choices?.[0]?.message;
-      const images = choice?.images || [];
-
-      return new Response(
-        JSON.stringify({ type: "image", text: choice?.content || "", images }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
     }
 
     // Default: streaming text response with retry

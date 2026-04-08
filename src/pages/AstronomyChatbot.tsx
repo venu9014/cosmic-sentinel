@@ -13,6 +13,8 @@ import { toast } from 'sonner';
 type MessageImage = {
   type: string;
   image_url: { url: string };
+  title?: string;
+  description?: string;
 };
 
 type Message = {
@@ -53,6 +55,8 @@ async function fetchRelatedImages(userText: string): Promise<MessageImage[]> {
       return data.images.map((img: any) => ({
         type: img.type || "image_url",
         image_url: { url: img.image_url?.url || "" },
+        title: img.title || "",
+        description: img.description || "",
       })).filter((img: MessageImage) => img.image_url.url);
     }
     return [];
@@ -278,7 +282,7 @@ export default function AstronomyChatbot() {
                           {message.loadingImages && (
                             <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
                               <Loader2 className="w-3 h-3 animate-spin" />
-                              <span>Generating related images...</span>
+                              <span>Finding related NASA images...</span>
                             </div>
                           )}
 
@@ -286,27 +290,38 @@ export default function AstronomyChatbot() {
                           {message.images && message.images.length > 0 && (
                             <div className="mt-3">
                               <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
-                                <ImageIcon className="w-3 h-3" /> Related visuals
+                                <ImageIcon className="w-3 h-3" /> 📸 Real NASA Images
                               </p>
-                              <div className="space-y-3">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                                 {message.images.map((img, imgIdx) => (
-                                  <div key={imgIdx} className="relative group rounded-xl overflow-hidden border border-border">
+                                  <div key={imgIdx} className="relative group rounded-xl overflow-hidden border border-border bg-black/20">
                                     <img
                                       src={img.image_url.url}
-                                      alt={`Related astronomy image ${imgIdx + 1}`}
-                                      className="w-full rounded-xl max-h-[400px] object-contain bg-black/20"
+                                      alt={img.title || `NASA image ${imgIdx + 1}`}
+                                      className="w-full aspect-square object-cover rounded-t-xl"
                                       loading="lazy"
                                     />
-                                    <button
-                                      onClick={() => downloadImage(img.image_url.url, imgIdx)}
+                                    {img.title && (
+                                      <div className="p-2">
+                                        <p className="text-xs font-medium text-foreground line-clamp-2">{img.title}</p>
+                                        {img.description && (
+                                          <p className="text-[10px] text-muted-foreground line-clamp-2 mt-0.5">{img.description}</p>
+                                        )}
+                                      </div>
+                                    )}
+                                    <a
+                                      href={img.image_url.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
                                       className="absolute top-2 right-2 p-1.5 rounded-lg bg-background/80 border border-border opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm"
-                                      title="Download image"
+                                      title="Open full image"
                                     >
                                       <Download className="w-4 h-4 text-foreground" />
-                                    </button>
+                                    </a>
                                   </div>
                                 ))}
                               </div>
+                              <p className="text-[10px] text-muted-foreground mt-1.5">Images courtesy of NASA Image and Video Library</p>
                             </div>
                           )}
                         </div>
