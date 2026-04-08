@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Bot, User, Sparkles, ArrowLeft, Loader2, ImageIcon, Download } from 'lucide-react';
+import { Send, Bot, User, Sparkles, ArrowLeft, Loader2, ImageIcon, Download, Mic, MicOff } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { Button } from '@/components/ui/button';
