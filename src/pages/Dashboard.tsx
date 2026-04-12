@@ -37,7 +37,15 @@ export default function Dashboard() {
   const [sortBy, setSortBy] = useState('risk');
    const [statsModalType, setStatsModalType] = useState<StatsType | null>(null);
 
-  const stats = useMemo(() => {
+  useEffect(() => {
+    if ((location.state as any)?.scrollToDeveloper && developerRef.current) {
+      setTimeout(() => {
+        developerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 500);
+    }
+  }, [location.state]);
+
+
     return calculateDashboardStats(asteroids || []);
   }, [asteroids]);
 
