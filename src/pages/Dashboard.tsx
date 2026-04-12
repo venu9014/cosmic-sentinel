@@ -26,6 +26,9 @@ import { StatsDetailModal, StatsType } from '@/components/StatsDetailModal';
 import { DeveloperSection } from '@/components/DeveloperSection';
 
 export default function Dashboard() {
+  const location = useLocation();
+  const developerRef = useRef<HTMLDivElement>(null);
+
   const { data: asteroids, isLoading, error, refetch, dataUpdatedAt } = useNasaData();
   const [selectedAsteroid, setSelectedAsteroid] = useState<ProcessedAsteroid | null>(null);
   const [dismissedAlerts, setDismissedAlerts] = useState<Set<string>>(new Set());
