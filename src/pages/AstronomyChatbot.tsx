@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Bot, User, Sparkles, ArrowLeft, Loader2, ImageIcon, Download, Mic, MicOff } from 'lucide-react';
+import { Send, Bot, User, Sparkles, ArrowLeft, Loader2, ImageIcon, Download, Mic, MicOff, Code2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { Button } from '@/components/ui/button';
@@ -311,6 +311,12 @@ export default function AstronomyChatbot() {
             </div>
           </div>
           <div className="ml-auto flex items-center gap-3">
+            <Link to="/" state={{ showDashboard: true, scrollToDeveloper: true }}>
+              <Button variant="outline" size="sm" className="gap-1.5 text-xs h-7">
+                <Code2 className="w-3 h-3" />
+                <span className="hidden sm:inline">Developed By</span>
+              </Button>
+            </Link>
             <LiveClock />
             <div className="flex items-center gap-1.5">
               <Sparkles className="w-3 h-3 text-primary animate-pulse" />
