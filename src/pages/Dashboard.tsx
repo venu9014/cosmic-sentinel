@@ -26,24 +26,7 @@ import { StatsDetailModal, StatsType } from '@/components/StatsDetailModal';
 
 
 export default function Dashboard() {
-  const location = useLocation();
-  const developerRef = useRef<HTMLDivElement>(null);
 
-  const { data: asteroids, isLoading, error, refetch, dataUpdatedAt } = useNasaData();
-  const [selectedAsteroid, setSelectedAsteroid] = useState<ProcessedAsteroid | null>(null);
-  const [dismissedAlerts, setDismissedAlerts] = useState<Set<string>>(new Set());
-  const [searchQuery, setSearchQuery] = useState('');
-  const [riskFilter, setRiskFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('risk');
-   const [statsModalType, setStatsModalType] = useState<StatsType | null>(null);
-
-  useEffect(() => {
-    if ((location.state as any)?.scrollToDeveloper && developerRef.current) {
-      setTimeout(() => {
-        developerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 500);
-    }
-  }, [location.state]);
 
   const stats = useMemo(() => {
     return calculateDashboardStats(asteroids || []);
