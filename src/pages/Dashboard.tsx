@@ -1,5 +1,5 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState, useMemo } from 'react';
+
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import {
@@ -23,27 +23,16 @@ import { AsteroidDetailModal } from '@/components/AsteroidDetailModal';
 import { FilterControls } from '@/components/FilterControls';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { StatsDetailModal, StatsType } from '@/components/StatsDetailModal';
-import { DeveloperSection } from '@/components/DeveloperSection';
+
 
 export default function Dashboard() {
-  const location = useLocation();
-  const developerRef = useRef<HTMLDivElement>(null);
-
   const { data: asteroids, isLoading, error, refetch, dataUpdatedAt } = useNasaData();
   const [selectedAsteroid, setSelectedAsteroid] = useState<ProcessedAsteroid | null>(null);
   const [dismissedAlerts, setDismissedAlerts] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
   const [riskFilter, setRiskFilter] = useState('all');
   const [sortBy, setSortBy] = useState('risk');
-   const [statsModalType, setStatsModalType] = useState<StatsType | null>(null);
-
-  useEffect(() => {
-    if ((location.state as any)?.scrollToDeveloper && developerRef.current) {
-      setTimeout(() => {
-        developerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 500);
-    }
-  }, [location.state]);
+  const [statsModalType, setStatsModalType] = useState<StatsType | null>(null);
 
   const stats = useMemo(() => {
     return calculateDashboardStats(asteroids || []);
@@ -297,10 +286,6 @@ export default function Dashboard() {
           )}
         </motion.div>
 
-        {/* Developed By Section */}
-        <div ref={developerRef} className="mt-12 max-w-md mx-auto">
-          <DeveloperSection />
-        </div>
       </main>
 
       <AsteroidDetailModal
