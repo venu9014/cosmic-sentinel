@@ -45,7 +45,7 @@ export default function Dashboard() {
     }
   }, [location.state]);
 
-
+  const stats = useMemo(() => {
     return calculateDashboardStats(asteroids || []);
   }, [asteroids]);
 
