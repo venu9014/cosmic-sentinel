@@ -23,7 +23,7 @@ import { AsteroidDetailModal } from '@/components/AsteroidDetailModal';
 import { FilterControls } from '@/components/FilterControls';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { StatsDetailModal, StatsType } from '@/components/StatsDetailModal';
-import { DeveloperSection } from '@/components/DeveloperSection';
+
 
 export default function Dashboard() {
   const location = useLocation();
