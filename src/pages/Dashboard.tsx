@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-
+import { Link } from 'react-router-dom';
+import { Code2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import {
@@ -304,6 +305,15 @@ export default function Dashboard() {
            setSelectedAsteroid(asteroid);
          }}
        />
+
+      <div className="fixed bottom-4 right-4 z-30">
+        <Link to="/developed-by">
+          <button className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-medium rounded-full bg-card/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all">
+            <Code2 className="w-3 h-3" />
+            Developed By
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }
