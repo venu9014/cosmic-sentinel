@@ -100,33 +100,64 @@ export default function AstronomyChatbot() {
 
     try {
       const recognition = new SpeechRecognition();
-      recognition.lang = 'en-US';
+      // Use browser's default language detection for multi-language support
+      recognition.lang = '';
       recognition.interimResults = true;
-      recognition.continuous = false;
+      recognition.continuous = true;
+      recognition.maxAlternatives = 3;
       recognitionRef.current = recognition;
 
-      recognition.onstart = () => setIsListening(true);
+      let finalTranscript = '';
+
+      recognition.onstart = () => {
+        setIsListening(true);
+        finalTranscript = '';
+      };
       recognition.onresult = (event: any) => {
-        const transcript = Array.from(event.results)
-          .map((r: any) => r[0].transcript)
-          .join('');
-        setInput(transcript);
-        if (event.results[0].isFinal) {
-          setIsListening(false);
+        let interim = '';
+        for (let i = 0; i < event.results.length; i++) {
+          const result = event.results[i];
+          // Pick the highest-confidence alternative
+          let bestAlt = result[0];
+          for (let j = 1; j < result.length; j++) {
+            if (result[j].confidence > bestAlt.confidence) {
+              bestAlt = result[j];
+            }
+          }
+          if (result.isFinal) {
+            finalTranscript += bestAlt.transcript;
+          } else {
+            interim += bestAlt.transcript;
+          }
         }
+        setInput(finalTranscript + interim);
       };
       recognition.onerror = (event: any) => {
+        // Don't stop on no-speech in continuous mode, just notify
+        if (event.error === 'no-speech') {
+          toast.info('No speech detected. Still listening...');
+          return;
+        }
         setIsListening(false);
+        recognitionRef.current = null;
         const msg = event.error === 'not-allowed'
           ? 'Microphone access denied. Please allow permission.'
-          : event.error === 'no-speech'
-          ? 'No speech detected. Please try again.'
           : event.error === 'network'
           ? 'Network error. Voice search requires an internet connection.'
+          : event.error === 'aborted'
+          ? 'Voice recognition stopped.'
           : 'Voice recognition failed. Please try again.';
-        toast.error(msg);
+        if (event.error !== 'aborted') toast.error(msg);
       };
-      recognition.onend = () => setIsListening(false);
+      recognition.onend = () => {
+        setIsListening(false);
+        recognitionRef.current = null;
+        // Auto-submit if we got a final transcript
+        if (finalTranscript.trim()) {
+          setInput(finalTranscript.trim());
+          toast.success('Voice captured! Click send or press Enter.');
+        }
+      };
 
       recognition.start();
     } catch (err) {
