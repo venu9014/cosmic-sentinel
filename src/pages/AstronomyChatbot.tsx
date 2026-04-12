@@ -311,7 +311,7 @@ export default function AstronomyChatbot() {
             </div>
           </div>
           <div className="ml-auto flex items-center gap-3">
-            <Link to="/" state={{ showDashboard: true, scrollToDeveloper: true }}>
+            <Link to="/developed-by">
               <Button variant="outline" size="sm" className="gap-1.5 text-xs h-7">
                 <Code2 className="w-3 h-3" />
                 <span className="hidden sm:inline">Developed By</span>
