@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Code2 } from 'lucide-react';
+import { Code2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import {
@@ -34,6 +34,8 @@ export default function Dashboard() {
   const [riskFilter, setRiskFilter] = useState('all');
   const [sortBy, setSortBy] = useState('risk');
   const [statsModalType, setStatsModalType] = useState<StatsType | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 12;
 
   const stats = useMemo(() => {
     return calculateDashboardStats(asteroids || []);
@@ -96,6 +98,17 @@ export default function Dashboard() {
 
     return filtered;
   }, [asteroids, searchQuery, riskFilter, sortBy]);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, riskFilter, sortBy]);
+
+  const totalPages = Math.ceil(filteredAsteroids.length / ITEMS_PER_PAGE);
+  const paginatedAsteroids = filteredAsteroids.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   if (isLoading && !asteroids) {
     return <LoadingScreen />;
@@ -265,12 +278,12 @@ export default function Dashboard() {
               Near-Earth Objects
             </h2>
             <span className="text-sm text-muted-foreground">
-              Showing {filteredAsteroids.length} of {asteroids?.length || 0}
+              Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(currentPage * ITEMS_PER_PAGE, filteredAsteroids.length)} of {filteredAsteroids.length}
             </span>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {filteredAsteroids.map((asteroid, index) => (
+            {paginatedAsteroids.map((asteroid, index) => (
               <AsteroidCard
                 key={asteroid.id}
                 asteroid={asteroid}
@@ -283,6 +296,59 @@ export default function Dashboard() {
           {filteredAsteroids.length === 0 && (
             <div className="text-center py-12">
               <p className="text-muted-foreground">No asteroids match your filters.</p>
+            </div>
+          )}
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-8">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="p-2 rounded-lg bg-card border border-border hover:border-primary/50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter((page) => {
+                  if (totalPages <= 7) return true;
+                  if (page === 1 || page === totalPages) return true;
+                  if (Math.abs(page - currentPage) <= 1) return true;
+                  return false;
+                })
+                .reduce<(number | string)[]>((acc, page, idx, arr) => {
+                  if (idx > 0 && typeof arr[idx - 1] === 'number' && (page as number) - (arr[idx - 1] as number) > 1) {
+                    acc.push('...');
+                  }
+                  acc.push(page);
+                  return acc;
+                }, [])
+                .map((item, idx) =>
+                  item === '...' ? (
+                    <span key={`ellipsis-${idx}`} className="px-2 text-muted-foreground text-sm">…</span>
+                  ) : (
+                    <button
+                      key={item}
+                      onClick={() => setCurrentPage(item as number)}
+                      className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
+                        currentPage === item
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-card border border-border hover:border-primary/50'
+                      }`}
+                    >
+                      {item}
+                    </button>
+                  )
+                )}
+
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-lg bg-card border border-border hover:border-primary/50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
           )}
         </motion.div>
