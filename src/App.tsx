@@ -11,6 +11,7 @@ import ResearchDashboard from "./pages/ResearchDashboard";
 import Contact from "./pages/Contact";
 import DevelopedBy from "./pages/DevelopedBy";
 import NotFound from "./pages/NotFound";
+import { CursorStarTrail } from "./components/CursorStarTrail";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
+      <CursorStarTrail />
       <Sonner />
       <BrowserRouter>
         <Routes>
