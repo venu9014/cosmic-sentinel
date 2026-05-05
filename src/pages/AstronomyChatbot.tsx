@@ -477,9 +477,13 @@ export default function AstronomyChatbot() {
             type="button"
             onClick={toggleVoice}
             disabled={isLoading}
-            variant={isListening ? "destructive" : "outline"}
+            variant="outline"
             size="sm"
-            className={isListening ? "animate-pulse" : ""}
+            className={
+              isListening
+                ? "bg-red-600 hover:bg-red-700 text-white border-red-500 animate-pulse shadow-[0_0_12px_rgba(239,68,68,0.7)]"
+                : ""
+            }
             title={isListening ? "Stop listening" : "Voice search"}
           >
             {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
