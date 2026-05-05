@@ -143,7 +143,7 @@ export function CursorStarTrail() {
 
     return () => {
       window.removeEventListener('resize', resize);
-      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('pointermove', onPointerMove);
       cancelAnimationFrame(animRef.current);
     };
   }, []);
