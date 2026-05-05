@@ -86,12 +86,21 @@ export default function AstronomyChatbot() {
       return;
     }
 
-    // Request microphone permission first
+    // Secure context check (Speech API requires HTTPS)
+    if (typeof window !== 'undefined' && !window.isSecureContext) {
+      toast.error('Voice requires a secure (HTTPS) connection.');
+      return;
+    }
+
+    // Request microphone permission first and release the stream immediately
     try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(t => t.stop());
     } catch (err: any) {
-      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+      if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError') {
         toast.error('Microphone access denied. Please allow microphone permission in your browser settings.');
+      } else if (err?.name === 'NotFoundError') {
+        toast.error('No microphone found on this device.');
       } else {
         toast.error('Could not access microphone. Please check your device settings.');
       }
@@ -100,10 +109,11 @@ export default function AstronomyChatbot() {
 
     try {
       const recognition = new SpeechRecognition();
-      // Use browser's default language detection for multi-language support
-      recognition.lang = '';
+      // Use a valid language code — empty string breaks Chrome on many devices.
+      recognition.lang = navigator.language || 'en-US';
       recognition.interimResults = true;
-      recognition.continuous = true;
+      // continuous mode is unreliable on mobile/Safari — single utterance is more dependable
+      recognition.continuous = false;
       recognition.maxAlternatives = 3;
       recognitionRef.current = recognition;
 
@@ -112,12 +122,12 @@ export default function AstronomyChatbot() {
       recognition.onstart = () => {
         setIsListening(true);
         finalTranscript = '';
+        toast.info('Listening… speak now');
       };
       recognition.onresult = (event: any) => {
         let interim = '';
         for (let i = 0; i < event.results.length; i++) {
           const result = event.results[i];
-          // Pick the highest-confidence alternative
           let bestAlt = result[0];
           for (let j = 1; j < result.length; j++) {
             if (result[j].confidence > bestAlt.confidence) {
@@ -130,29 +140,30 @@ export default function AstronomyChatbot() {
             interim += bestAlt.transcript;
           }
         }
-        setInput(finalTranscript + interim);
+        setInput((finalTranscript + interim).trim());
       };
       recognition.onerror = (event: any) => {
-        // Don't stop on no-speech in continuous mode, just notify
-        if (event.error === 'no-speech') {
-          toast.info('No speech detected. Still listening...');
-          return;
-        }
         setIsListening(false);
         recognitionRef.current = null;
-        const msg = event.error === 'not-allowed'
-          ? 'Microphone access denied. Please allow permission.'
-          : event.error === 'network'
-          ? 'Network error. Voice search requires an internet connection.'
-          : event.error === 'aborted'
-          ? 'Voice recognition stopped.'
-          : 'Voice recognition failed. Please try again.';
-        if (event.error !== 'aborted') toast.error(msg);
+        const code = event?.error;
+        if (code === 'no-speech') {
+          toast.info('No speech detected. Try again.');
+          return;
+        }
+        if (code === 'aborted') return;
+        const msg =
+          code === 'not-allowed' || code === 'service-not-allowed'
+            ? 'Microphone access denied. Please allow permission.'
+            : code === 'network'
+            ? 'Network error. Voice requires an internet connection.'
+            : code === 'audio-capture'
+            ? 'No microphone detected on this device.'
+            : 'Voice recognition failed. Please try again.';
+        toast.error(msg);
       };
       recognition.onend = () => {
         setIsListening(false);
         recognitionRef.current = null;
-        // Auto-submit if we got a final transcript
         if (finalTranscript.trim()) {
           setInput(finalTranscript.trim());
           toast.success('Voice captured! Click send or press Enter.');
@@ -162,7 +173,8 @@ export default function AstronomyChatbot() {
       recognition.start();
     } catch (err) {
       setIsListening(false);
-      toast.error('Voice search failed to start. Try opening the app in a new tab.');
+      recognitionRef.current = null;
+      toast.error('Voice search failed to start. Try again or use Chrome/Edge.');
     }
   };
 
