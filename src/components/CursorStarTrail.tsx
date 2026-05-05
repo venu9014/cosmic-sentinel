@@ -20,35 +20,50 @@ export function CursorStarTrail() {
   const animRef = useRef<number>(0);
 
   useEffect(() => {
+    // Skip entirely on touch-only / coarse-pointer devices (phones, tablets)
+    // and respect users who prefer reduced motion.
+    const isFinePointer =
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(pointer: fine)').matches;
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!isFinePointer || prefersReducedMotion) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize();
     window.addEventListener('resize', resize);
 
     let lastX = 0, lastY = 0;
 
-    const onMove = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY };
-
-      const dx = e.clientX - lastX;
-      const dy = e.clientY - lastY;
+    const spawn = (x: number, y: number) => {
+      const dx = x - lastX;
+      const dy = y - lastY;
       const speed = Math.sqrt(dx * dx + dy * dy);
+      mouseRef.current = { x, y };
 
-      // Spawn stars based on cursor speed
       const count = Math.min(Math.floor(speed / 4), 5);
       for (let i = 0; i < count; i++) {
         const angle = Math.random() * Math.PI * 2;
         const spread = Math.random() * 8;
         starsRef.current.push({
-          x: e.clientX + Math.cos(angle) * spread,
-          y: e.clientY + Math.sin(angle) * spread,
+          x: x + Math.cos(angle) * spread,
+          y: y + Math.sin(angle) * spread,
           size: Math.random() * 3 + 1.5,
           opacity: 1,
           rotation: Math.random() * Math.PI * 2,
@@ -56,15 +71,21 @@ export function CursorStarTrail() {
           vy: (Math.random() - 0.5) * 2 - dy * 0.05 + 0.3,
           life: 0,
           maxLife: 30 + Math.random() * 30,
-          hue: 200 + Math.random() * 60, // cyan to purple range
+          hue: 200 + Math.random() * 60,
         });
       }
 
-      lastX = e.clientX;
-      lastY = e.clientY;
+      lastX = x;
+      lastY = y;
     };
 
-    window.addEventListener('mousemove', onMove);
+    // Use Pointer Events so it works across mouse, pen, trackpad consistently.
+    const onPointerMove = (e: PointerEvent) => {
+      if (e.pointerType === 'touch') return; // skip touch devices
+      spawn(e.clientX, e.clientY);
+    };
+
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
 
     const drawStar = (ctx: CanvasRenderingContext2D, x: number, y: number, size: number, rotation: number, opacity: number, hue: number) => {
       ctx.save();
@@ -122,7 +143,7 @@ export function CursorStarTrail() {
 
     return () => {
       window.removeEventListener('resize', resize);
-      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('pointermove', onPointerMove);
       cancelAnimationFrame(animRef.current);
     };
   }, []);
