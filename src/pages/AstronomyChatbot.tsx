@@ -161,11 +161,38 @@ export default function AstronomyChatbot() {
             : 'Voice recognition failed. Please try again.';
         toast.error(msg);
       };
-      recognition.onend = () => {
+      recognition.onend = async () => {
         setIsListening(false);
         recognitionRef.current = null;
-        if (finalTranscript.trim()) {
-          setInput(finalTranscript.trim());
+        const raw = finalTranscript.trim();
+        if (!raw) return;
+        setInput(raw);
+        // AI autocorrect pass — fixes mis-hearings, spelling, punctuation
+        try {
+          const resp = await fetch(CHAT_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            },
+            body: JSON.stringify({
+              messages: [{ role: 'user', content: raw }],
+              mode: 'autocorrect',
+            }),
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            const corrected = (data?.corrected || raw).trim();
+            setInput(corrected);
+            if (corrected.toLowerCase() !== raw.toLowerCase()) {
+              toast.success('Voice captured & autocorrected!');
+            } else {
+              toast.success('Voice captured! Click send or press Enter.');
+            }
+          } else {
+            toast.success('Voice captured! Click send or press Enter.');
+          }
+        } catch {
           toast.success('Voice captured! Click send or press Enter.');
         }
       };

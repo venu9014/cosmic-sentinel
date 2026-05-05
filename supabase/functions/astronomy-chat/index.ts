@@ -87,6 +87,50 @@ serve(async (req) => {
       }
     }
 
+    // Mode: autocorrect a (likely voice-transcribed) astronomy question
+    if (mode === "autocorrect") {
+      try {
+        const correctResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${LOVABLE_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "google/gemini-2.5-flash-lite",
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You correct speech-to-text transcripts of astronomy questions. " +
+                  "Fix spelling, grammar, punctuation, capitalization, and obvious mis-hearings " +
+                  "(e.g. 'astroid' -> 'asteroid', 'black whole' -> 'black hole', 'nassa' -> 'NASA'). " +
+                  "Preserve the user's intent and language. Do NOT answer the question. " +
+                  "Do NOT add commentary. Return ONLY the corrected text as plain text.",
+              },
+              { role: "user", content: userText },
+            ],
+            stream: false,
+            temperature: 0.2,
+          }),
+        });
+
+        if (!correctResp.ok) {
+          return new Response(JSON.stringify({ corrected: userText }),
+            { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+
+        const data = await correctResp.json();
+        const corrected = data?.choices?.[0]?.message?.content?.trim() || userText;
+        return new Response(JSON.stringify({ corrected }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      } catch (err) {
+        console.error("Autocorrect error:", err);
+        return new Response(JSON.stringify({ corrected: userText }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+    }
+
     // Default: streaming text response with retry
     let response: Response | null = null;
     for (let attempt = 0; attempt < 3; attempt++) {
