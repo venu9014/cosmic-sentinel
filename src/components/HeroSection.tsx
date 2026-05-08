@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Rocket, Shield, AlertTriangle, ArrowRight, Activity, Bot, FileDown } from 'lucide-react';
+import { Rocket, Shield, AlertTriangle, ArrowRight, Activity, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { StarField } from '@/components/StarField';
 import { Link } from 'react-router-dom';
@@ -119,31 +119,6 @@ export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
                 AstroBot AI Chat
               </Button>
             </Link>
-
-            <Button
-              variant="outline"
-              size="xl"
-              className="group w-full"
-              onClick={async () => {
-                try {
-                  const res = await fetch('/AstroTracking-AI-Project-Report.pdf');
-                  const blob = await res.blob();
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = 'AstroTracking-AI-Project-Report.pdf';
-                  document.body.appendChild(a);
-                  a.click();
-                  a.remove();
-                  URL.revokeObjectURL(url);
-                } catch {
-                  window.open('/AstroTracking-AI-Project-Report.pdf', '_blank');
-                }
-              }}
-            >
-              <FileDown className="w-5 h-5" />
-              Download Project Report
-            </Button>
           </motion.div>
 
           {/* Live Clock */}
