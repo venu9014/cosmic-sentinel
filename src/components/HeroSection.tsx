@@ -119,6 +119,20 @@ export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
                 AstroBot AI Chat
               </Button>
             </Link>
+
+            <a
+              href="/AstroTracking-AI-Project-Report.pdf"
+              download
+            >
+              <Button
+                variant="outline"
+                size="xl"
+                className="group w-full"
+              >
+                <FileDown className="w-5 h-5" />
+                Download Project Report
+              </Button>
+            </a>
           </motion.div>
 
           {/* Live Clock */}
