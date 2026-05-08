@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Rocket, Shield, AlertTriangle, ArrowRight, Activity, Bot } from 'lucide-react';
+import { Rocket, Shield, AlertTriangle, ArrowRight, Activity, Bot, FileDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { StarField } from '@/components/StarField';
 import { Link } from 'react-router-dom';
