@@ -120,19 +120,30 @@ export function HeroSection({ onEnterDashboard }: HeroSectionProps) {
               </Button>
             </Link>
 
-            <a
-              href="/AstroTracking-AI-Project-Report.pdf"
-              download
+            <Button
+              variant="outline"
+              size="xl"
+              className="group w-full"
+              onClick={async () => {
+                try {
+                  const res = await fetch('/AstroTracking-AI-Project-Report.pdf');
+                  const blob = await res.blob();
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = 'AstroTracking-AI-Project-Report.pdf';
+                  document.body.appendChild(a);
+                  a.click();
+                  a.remove();
+                  URL.revokeObjectURL(url);
+                } catch {
+                  window.open('/AstroTracking-AI-Project-Report.pdf', '_blank');
+                }
+              }}
             >
-              <Button
-                variant="outline"
-                size="xl"
-                className="group w-full"
-              >
-                <FileDown className="w-5 h-5" />
-                Download Project Report
-              </Button>
-            </a>
+              <FileDown className="w-5 h-5" />
+              Download Project Report
+            </Button>
           </motion.div>
 
           {/* Live Clock */}
