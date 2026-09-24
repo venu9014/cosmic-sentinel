@@ -256,7 +256,7 @@ export default function Contact() {
 
               <h2 className="font-orbitron text-xl font-bold text-foreground mb-6 flex items-center gap-2">
                 <Radio className="w-5 h-5 text-primary" />
-                Transmission Form
+                Contact Us
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-5">
